@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="wzzz space">
 <meta property="og:description" content="简单介绍go项目编译中的一些概念 GO目录的简单介绍(GOROOT, GOPATH,Vendor) GO命令的简单介绍(go run, go build, go install) GO的文件分类(命令源码文件，库源码文件，测试源码文件) GO项目在GOPATH中和不在GOPATH的引入包的区别">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-26T15:09:19.497Z">
+<meta property="og:updated_time" content="2019-08-27T07:53:53.271Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GOPATH and Vendor">
 <meta name="twitter:description" content="简单介绍go项目编译中的一些概念 GO目录的简单介绍(GOROOT, GOPATH,Vendor) GO命令的简单介绍(go run, go build, go install) GO的文件分类(命令源码文件，库源码文件，测试源码文件) GO项目在GOPATH中和不在GOPATH的引入包的区别">
@@ -307,6 +307,7 @@
 <a id="more"></a>
 
 
+
 <h1 id="GOROOT-and-GOPATH"><a href="#GOROOT-and-GOPATH" class="headerlink" title="GOROOT and GOPATH"></a>GOROOT and GOPATH</h1><p>GOROOT：该环境变量的值为 Go 语言的当前安装目录。</p>
 <p>GOPATH：在go build的时候，会在GOPATH的目录下搜索包；GOPATH可以有多个路径(但是不建议)。</p>
 <h2 id="GOPATH-简单介绍"><a href="#GOPATH-简单介绍" class="headerlink" title="GOPATH  简单介绍"></a>GOPATH  简单介绍</h2><p>GOPATH的目录下需要包含bin，pkg，src的子目录</p>
@@ -320,15 +321,18 @@
 <h1 id="go-run-go-build-go-install的区别"><a href="#go-run-go-build-go-install的区别" class="headerlink" title="go run; go build ;go install的区别"></a>go run; go build ;go install的区别</h1><p>go run :该目录下可以有多个命令源码文件(main文件)，但是一次只能编译一个(main文件)</p>
 <p>go build:该项目下只能有一个源码文件(main文件)，编译出来的名称默认是该项目的目录名称</p>
 <p>go install:该项目下只能有一个源码文件(main文件)，编译出来的可执行文件移动到GOPATH的bin目录和pkg目录下。</p>
-<h1 id="go-vendor-目录"><a href="#go-vendor-目录" class="headerlink" title="go vendor 目录"></a>go vendor 目录</h1><h2 id="go项目不在GOPATH中"><a href="#go项目不在GOPATH中" class="headerlink" title="go项目不在GOPATH中"></a>go项目不在GOPATH中</h2><p>(1)相对路径的方式引入包(import ./my_lib)</p>
+<h1 id="go-vendor-目录"><a href="#go-vendor-目录" class="headerlink" title="go vendor 目录"></a>go vendor 目录</h1><p>###go项目不在GOPATH中</p>
+<p>(1)相对路径的方式引入包(import ./my_lib)</p>
 <p>(2)绝对路径的方式引入包(import test/my_lib)</p>
 <p>(3)引入GOPATH路径下的包下(import my_lib1)</p>
 <p>(4)不支持通过vendor目录的方式引入包</p>
-<h2 id="go项目在GOPATH中"><a href="#go项目在GOPATH中" class="headerlink" title="go项目在GOPATH中"></a>go项目在GOPATH中</h2><p>(1)不支持相对路径的方式引入包</p>
+<p>###go项目在GOPATH中</p>
+<p>(1)不支持相对路径的方式引入包</p>
 <p>(2)绝对路径的方式引入包(import test/my_lib)</p>
 <p>(3)引入GOPATH路径下的包(import my_lib1)</p>
 <p>(4)通过vendor目录的方式引入包</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<p>###总结</p>
+<table>
 <thead>
 <tr>
 <th></th>
@@ -508,7 +512,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GOROOT-and-GOPATH"><span class="nav-number">1.</span> <span class="nav-text">GOROOT and GOPATH</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GOPATH-简单介绍"><span class="nav-number">1.1.</span> <span class="nav-text">GOPATH  简单介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go的文件分类"><span class="nav-number">2.</span> <span class="nav-text">go的文件分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-run-go-build-go-install的区别"><span class="nav-number">3.</span> <span class="nav-text">go run; go build ;go install的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-vendor-目录"><span class="nav-number">4.</span> <span class="nav-text">go vendor 目录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目不在GOPATH中"><span class="nav-number">4.1.</span> <span class="nav-text">go项目不在GOPATH中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目在GOPATH中"><span class="nav-number">4.2.</span> <span class="nav-text">go项目在GOPATH中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.3.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GOROOT-and-GOPATH"><span class="nav-number">1.</span> <span class="nav-text">GOROOT and GOPATH</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GOPATH-简单介绍"><span class="nav-number">1.1.</span> <span class="nav-text">GOPATH  简单介绍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go的文件分类"><span class="nav-number">2.</span> <span class="nav-text">go的文件分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-run-go-build-go-install的区别"><span class="nav-number">3.</span> <span class="nav-text">go run; go build ;go install的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-vendor-目录"><span class="nav-number">4.</span> <span class="nav-text">go vendor 目录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
