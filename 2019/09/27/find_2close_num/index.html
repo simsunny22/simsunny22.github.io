@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT">
+  <meta name="keywords" content="leetcode,">
 
 
 
@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="静态库和动态库的相关概念和使用">
+<meta name="description" content="一个无序的数组，指定一个数。在这个无序数组中，找到两数之和等于或者最接近这个给定的数。">
+<meta name="keywords" content="leetcode">
 <meta property="og:type" content="article">
-<meta property="og:title" content="静态库和动态库">
-<meta property="og:url" content="http://yoursite.com/2019/09/01/静态动态库/index.html">
+<meta property="og:title" content="两数之和最接近">
+<meta property="og:url" content="http://yoursite.com/2019/09/27/find_2close_num/index.html">
 <meta property="og:site_name" content="wz&#39;s blog">
-<meta property="og:description" content="静态库和动态库的相关概念和使用">
+<meta property="og:description" content="一个无序的数组，指定一个数。在这个无序数组中，找到两数之和等于或者最接近这个给定的数。">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-01T06:14:38.116Z">
+<meta property="og:updated_time" content="2019-09-27T01:55:35.571Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="静态库和动态库">
-<meta name="twitter:description" content="静态库和动态库的相关概念和使用">
+<meta name="twitter:title" content="两数之和最接近">
+<meta name="twitter:description" content="一个无序的数组，指定一个数。在这个无序数组中，找到两数之和等于或者最接近这个给定的数。">
 
 
 
@@ -119,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/09/01/静态动态库/">
+  <link rel="canonical" href="http://yoursite.com/2019/09/27/find_2close_num/">
 
 
 
 
 
-  <title>静态库和动态库 | wz's blog</title>
+  <title>两数之和最接近 | wz's blog</title>
   
 
 
@@ -262,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/01/静态动态库/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/27/find_2close_num/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wz">
@@ -279,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">静态库和动态库</h1>
+          <h1 class="post-title" itemprop="name headline">两数之和最接近</h1>
         
 
         <div class="post-meta">
@@ -291,8 +292,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-01T14:14:38+08:00">
-                2019-09-01
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-27T09:52:42+08:00">
+                2019-09-27
               </time>
             
 
@@ -301,6 +302,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/leetcode/" itemprop="url" rel="index">
+                    <span itemprop="name">leetcode</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -329,51 +352,19 @@
       
 
       
-        <p>静态库和动态库的相关概念和使用</p>
+        <p>一个无序的数组，指定一个数。在这个无序数组中，找到两数之和等于或者最接近这个给定的数。</p>
 <a id="more"></a>
 
+<h1 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h1><p>遍历数组，记录数组中两数之和，和给定的数比较，得到最接近的两数之和。</p>
+<p>时间复杂度是O(n2)</p>
+<h1 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h1><p>对数组先进行排序；记录左右两个指针，分别指向数组的两边；</p>
+<p>如果两数之和大于给定的数，则右指针–；如果两数之和小于给定的数，则左指针++；</p>
+<p>记录每次两数之和与给定数差的绝对值。如果发现这次的绝对值比上次的绝对值小，则替换。</p>
+<p>当左右两指针相遇，或者两数之和等于给定数的时候，则返回。</p>
+<p>时间复杂度：排序的复杂度(nlogn)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Result <span class="title">find_close_num</span><span class="params">(<span class="keyword">int</span> *a, <span class="keyword">int</span> len, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//sort array</span></span><br><span class="line">        print_list(a, len);</span><br><span class="line">        <span class="built_in">std</span>::sort(a, a+<span class="number">11</span>);</span><br><span class="line">        print_list(a, len);</span><br><span class="line"></span><br><span class="line">        <span class="function">Result <span class="title">result</span><span class="params">(<span class="number">0</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = len<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">int</span> current_abs = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> min = a[i], max = a[j];</span><br><span class="line">        <span class="keyword">int</span> last_abs = <span class="built_in">abs</span>(<span class="number">2</span>*max-num) &gt; <span class="built_in">abs</span>(<span class="number">2</span>*min-num) ? <span class="number">2</span>*max : <span class="number">2</span>*min;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">                <span class="keyword">int</span> _i = i, _j = j;</span><br><span class="line">                <span class="keyword">int</span> _sum = a[i] + a[j];</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (_sum &gt; num) &#123;</span><br><span class="line">                        j--;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (_sum &lt; num) &#123;</span><br><span class="line">                        i++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        result.<span class="built_in">set</span>(a[_i], a[_j]);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                current_abs = <span class="built_in">abs</span>(_sum - num);</span><br><span class="line">                <span class="comment">//if current_abs &lt; last_abs, means more close, so record result</span></span><br><span class="line">                <span class="keyword">if</span> (current_abs &lt; last_abs) &#123;</span><br><span class="line">                        last_abs = current_abs;</span><br><span class="line">                        result.<span class="built_in">set</span>(a[_i], a[_j]);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-<h1 id="静态库和动态库"><a href="#静态库和动态库" class="headerlink" title="静态库和动态库"></a>静态库和动态库</h1><h2 id="静态库"><a href="#静态库" class="headerlink" title="静态库"></a>静态库</h2><p>静态库的后缀(.a .lib)</p>
-<p>静态库在程序编译时会被连接到目标代码中，程序运行时将不再需要该静态库。</p>
-<h2 id="动态库"><a href="#动态库" class="headerlink" title="动态库"></a>动态库</h2><p>动态库的后缀是(.so, .dll)</p>
-<p>动态库在程序编译时并不会被连接到目标代码中，而是在程序运行是才被载入，因此在程序运行时还需要动态库存在。</p>
-<h2 id="静态库和动态库的区别"><a href="#静态库和动态库的区别" class="headerlink" title="静态库和动态库的区别"></a>静态库和动态库的区别</h2><ul>
-<li>静态库，每个程序编译的时候，会把静态库编译进去，相当于每个程序私有一份静态库，占用多分内存。</li>
-<li>动态库，每个程序编译的时候，不会把动态库连接进去，而是在程序运行的时候才会被载入，相当于多个程序公用一份动态库，占用一份内存。</li>
-</ul>
-<h1 id="静态库和动态库的创建"><a href="#静态库和动态库的创建" class="headerlink" title="静态库和动态库的创建"></a>静态库和动态库的创建</h1><h2 id="静态库的创建"><a href="#静态库的创建" class="headerlink" title="静态库的创建"></a>静态库的创建</h2><ul>
-<li>静态库源文件</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static_library_test.c  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">static_library_test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"static_library_test 111111 \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>静态库的命名规则: lib{name}.a </p>
-</li>
-<li><p>静态库的创建： </p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编译目标文件</span></span><br><span class="line">gcc -c static_library_test.c </span><br><span class="line"><span class="meta">#</span><span class="bash">创建静态库</span></span><br><span class="line">ar -crv libstatic_library_test.a static_library_test.o</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态库的创建"><a href="#动态库的创建" class="headerlink" title="动态库的创建"></a>动态库的创建</h2><ul>
-<li>动态库源文件</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dynamic_library_test.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dynamic_library_test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"dynamic_library_test 222222 \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>动态库的命名规则: lib{name}.so </p>
-</li>
-<li><p>动态库的创建</p>
-</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> method 1</span></span><br><span class="line">gcc -fPIC -c dynamic_library_test.c</span><br><span class="line">gcc -shared -o libdynamic_library_test.so dynamic_library_test.o</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> method 2</span></span><br><span class="line">gcc -fPIC -shared -o libdynamic_library_test.so dynamic_library_test.c</span><br></pre></td></tr></table></figure>
-
-<h1 id="静态库和动态库的引用"><a href="#静态库和动态库的引用" class="headerlink" title="静态库和动态库的引用"></a>静态库和动态库的引用</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    static_library_test();</span><br><span class="line">    dynamic_library_test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c -L ./ -l static_library_test -l dynamic_library_test</span><br><span class="line"><span class="meta">#</span><span class="bash"> -L 表示要连接的库所在目录</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -l 指定链接时需要的动态库，编译器查找动态连接库时有隐含的命名规则，即在给出的名字前面加上lib，后面加上.a或.so来确定库的名称。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认会在<span class="built_in">test</span>前面加上lib在结尾加上.a或者.so，所以库文件就是(libtest.a 或者 libtest.so)</span></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 注意：编译动态库可能会报找不到文件的错误</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决方式</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1 编辑/etc/ld.so.conf文件，加入库文件所在目录的路径</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2 运行ldconfig ，该命令会重建/etc/ld.so.cache文件</span></span><br></pre></td></tr></table></figure>
-
+<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/simsunny22/leetcode/blob/master/find_closed_sum.cpp" target="_blank" rel="noopener">https://github.com/simsunny22/leetcode/blob/master/find_closed_sum.cpp</a></p>
 
       
     </div>
@@ -389,6 +380,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+          
+        </div>
+      
 
       
       
@@ -398,8 +395,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/31/gopath_and_vendor/" rel="next" title="GOPATH and Vendor">
-                <i class="fa fa-chevron-left"></i> GOPATH and Vendor
+              <a href="/2019/09/23/mid/" rel="next" title="两个有序数组请中位数的问题">
+                <i class="fa fa-chevron-left"></i> 两个有序数组请中位数的问题
               </a>
             
           </div>
@@ -407,10 +404,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/09/23/mid/" rel="prev" title="两个有序数组请中位数的问题">
-                两个有序数组请中位数的问题 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -542,7 +535,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#静态库和动态库"><span class="nav-number">1.</span> <span class="nav-text">静态库和动态库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态库"><span class="nav-number">1.1.</span> <span class="nav-text">静态库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态库"><span class="nav-number">1.2.</span> <span class="nav-text">动态库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态库和动态库的区别"><span class="nav-number">1.3.</span> <span class="nav-text">静态库和动态库的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#静态库和动态库的创建"><span class="nav-number">2.</span> <span class="nav-text">静态库和动态库的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态库的创建"><span class="nav-number">2.1.</span> <span class="nav-text">静态库的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态库的创建"><span class="nav-number">2.2.</span> <span class="nav-text">动态库的创建</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#静态库和动态库的引用"><span class="nav-number">3.</span> <span class="nav-text">静态库和动态库的引用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一："><span class="nav-number">1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二："><span class="nav-number">2.</span> <span class="nav-text">方法二：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">3.</span> <span class="nav-text">源码</span></a></li></ol></div>
             
 
           </div>
