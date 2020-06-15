@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="makefile的简单介绍和使用">
+<meta name="description" content="堆排序 大顶堆的概念：父节点要大于左右孩子节点 小顶堆的概念：父节点要小于左右孩子节点 从小到大排序：(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组) (2) 把数组的中第一个元素和最后一个元素a[n]进行交换 交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。 此时需要重新把数组a[0]~a[n-1]">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Makefile">
-<meta property="og:url" content="http://yoursite.com/2019/08/18/Makefile/index.html">
+<meta property="og:title" content="wz&#39;s blog">
+<meta property="og:url" content="http://yoursite.com/2019/10/21/heap_sort/index.html">
 <meta property="og:site_name" content="wz&#39;s blog">
-<meta property="og:description" content="makefile的简单介绍和使用">
+<meta property="og:description" content="堆排序 大顶堆的概念：父节点要大于左右孩子节点 小顶堆的概念：父节点要小于左右孩子节点 从小到大排序：(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组) (2) 把数组的中第一个元素和最后一个元素a[n]进行交换 交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。 此时需要重新把数组a[0]~a[n-1]">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-19T01:41:31.119Z">
+<meta property="og:updated_time" content="2020-06-15T15:06:37.673Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Makefile">
-<meta name="twitter:description" content="makefile的简单介绍和使用">
+<meta name="twitter:title" content="wz&#39;s blog">
+<meta name="twitter:description" content="堆排序 大顶堆的概念：父节点要大于左右孩子节点 小顶堆的概念：父节点要小于左右孩子节点 从小到大排序：(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组) (2) 把数组的中第一个元素和最后一个元素a[n]进行交换 交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。 此时需要重新把数组a[0]~a[n-1]">
 
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/18/Makefile/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/21/heap_sort/">
 
 
 
 
 
-  <title>Makefile | wz's blog</title>
+  <title> | wz's blog</title>
   
 
 
@@ -262,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/18/Makefile/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/21/heap_sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wz">
@@ -279,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Makefile</h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -291,8 +291,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-18T22:19:33+08:00">
-                2019-08-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-10-21T14:49:22+08:00">
+                2019-10-21
               </time>
             
 
@@ -334,37 +334,63 @@
       
 
       
-        <p>makefile的简单介绍和使用</p>
-<a id="more"></a>
-
-<h3 id="Makefile初级入门"><a href="#Makefile初级入门" class="headerlink" title="Makefile初级入门"></a><strong>Makefile初级入门</strong></h3><h4 id="一：简单规则"><a href="#一：简单规则" class="headerlink" title="一：简单规则"></a>一：简单规则</h4><p><strong>三要素(target,prerequisites,command)：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target: prerequisites</span><br><span class="line">	command</span><br></pre></td></tr></table></figure>
-
-<p>1 target: 可以是目标文件(例如:main.o);可以是可执行文件(例如:test);可以是一个标签</p>
-<p>2 prerequisites: 跟在target后面，表示生成该target需要用到的依赖</p>
-<p>3 command: 该target要执行的命令</p>
-<p><strong>注意：</strong></p>
-<p>target后面如果有prerequisites，执行make命令时，prerequisites中有一个以上的文件比target文件要新的话，command所定义的命令就会被执行。</p>
-<p>target后面如果没有prerequisites，执行make命令后，因为prerequisites后面没有文件，所以不会执行command所定义的命令；如果想要执行command定义的命令的话，就需要显示执行make target。</p>
-<h4 id="二：实例"><a href="#二：实例" class="headerlink" title="二：实例"></a>二：实例</h4><p>现在我们有三个文件，分别是stu.h stu.c main.c</p>
-<p>我们可以直接通过gcc命令编译或者通过编写makefile文件，然后通过make命令进行编译</p>
-<h5 id="1-不使用Makefile进行编译和连接"><a href="#1-不使用Makefile进行编译和连接" class="headerlink" title="1 不使用Makefile进行编译和连接"></a>1 不使用Makefile进行编译和连接</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">g++ -c main.c #编译出目标文件 main.o</span><br><span class="line">g++ -c stu.c #编译出目标文件 stu.o</span><br><span class="line">g++ -o test main.o stu.o #把两个目标文件连接起来，生成可执行文件test</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-使用目标文件进行编译和连接"><a href="#2-使用目标文件进行编译和连接" class="headerlink" title="2 使用目标文件进行编译和连接"></a>2 使用目标文件进行编译和连接</h5><p><strong>Makefile文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cc = g++ #cc表示编译命令变量(如果是c代码，把g++替换成gcc，就不用逐个替换)</span><br><span class="line">objects = main.o stu.o #当你的工程量增加的时候，使用变量可以方便的增加目标文件</span><br><span class="line"></span><br><span class="line">test : $&#123;objects&#125; #target是可执行文件</span><br><span class="line">        $(cc) -o test $&#123;objects&#125;</span><br><span class="line">main.o : main.c stu.h #target是目标文件</span><br><span class="line">        $(cc) -c main.c</span><br><span class="line">stu.o : stu.c stu.h #target是目标文件</span><br><span class="line">        $(cc) -c stu.c</span><br><span class="line">clean : #target是标签</span><br><span class="line">        rm test main.o stu.o</span><br></pre></td></tr></table></figure>
-
-<p><strong>执行make和make clean命令</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make #编译出目标文件 main.o stu.o 和可执行文件 test</span><br><span class="line">make clean #清理目标文件 main.o stu.o 和可执行文件 test</span><br></pre></td></tr></table></figure>
-
-<h4 id="三：代码"><a href="#三：代码" class="headerlink" title="三：代码"></a>三：代码</h4><p><strong>(1) stu.h</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">stu</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">        stu(<span class="built_in">string</span> name_, <span class="keyword">uint16_t</span> age_);</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">string</span>   name;</span><br><span class="line">        <span class="keyword">uint16_t</span> age;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>(2) stu.c</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stu.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">stu::stu(<span class="built_in">string</span> name_, <span class="keyword">uint16_t</span> age_) &#123;</span><br><span class="line">        name = name_;</span><br><span class="line">        age = age_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> stu::print() &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"stu name:%s, age:%d \n"</span>, name.c_str(), age);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>(3) main.c</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stu.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function">stu <span class="title">stu1</span><span class="params">(<span class="string">"wz"</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">        <span class="function">stu <span class="title">stu2</span><span class="params">(<span class="string">"wd"</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">        stu1.print();</span><br><span class="line">        stu2.print();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"------ end Makefile ------ \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+        <p>堆排序</p>
+<h1 id="大顶堆的概念："><a href="#大顶堆的概念：" class="headerlink" title="大顶堆的概念："></a>大顶堆的概念：</h1><p>父节点要大于左右孩子节点</p>
+<h1 id="小顶堆的概念："><a href="#小顶堆的概念：" class="headerlink" title="小顶堆的概念："></a>小顶堆的概念：</h1><p>父节点要小于左右孩子节点</p>
+<h1 id="从小到大排序："><a href="#从小到大排序：" class="headerlink" title="从小到大排序："></a>从小到大排序：</h1><p>(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组)</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<p>交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。</p>
+<p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足大顶堆</p>
+<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
+<p>#从大到小排序</p>
+<p>(1)构建小顶堆。(把无序的数组，按照小顶堆进行排序，此时的并不是有序数组，而是满足小顶堆的数组)</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<p>交换完成后，最后一个元素a[n]就是该数组中最小的元素，a[0]~a[n-1]此时不满足小顶堆。</p>
+<p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足小顶堆</p>
+<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
+<h2 id="二叉树的性质："><a href="#二叉树的性质：" class="headerlink" title="二叉树的性质："></a>二叉树的性质：</h2><p>对于二叉树，根节点是1</p>
+<p>父节点是n，左孩在是2n，右孩子是2n+1</p>
+<p>孩子节点是n，父节点是n/2</p>
+<p>比如子节点是2(左孩子)，父节点是1</p>
+<p>比如子节点是3(有孩子)，父节点是1.5-&gt;1</p>
+<p>对于二叉树，根节点是0</p>
+<p>父节点是n，左孩子是2n+1，右孩子是2n+2</p>
+<p>孩子节点是n，父亲节点是（n-1)/2</p>
+<p>比如子节点是1，父亲节点是0</p>
+<p>比如子节点是2，附近节点是0.5-&gt;0</p>
+<p>假设给定的无序数组如下，我们使用堆排序进行排序。</p>
+<p>(1)先构造数组a[0]-a[n-1]，使它们满足大顶堆。</p>
+<p>(2)把数组a[0]和a[n-1]进行交换；保证最大的数，在数组a[0]-a[n-1]的最后一位</p>
+<p>(3)然后调整数组a[0]-a[n-2]，使它们满足大顶堆。</p>
+<p>(4)把数组a[0]和a[n-2]进行交换；保证最大的数，在数组a[0]-a[n-2]的最后一位</p>
+<p>(5)一直重复(3)，(4)的步骤，直到调整数组调整数组a[0]-a[1]，使它们满足大顶堆。</p>
+<p>![image-20191026225622667](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026225622667.png)</p>
+<p>一： 把原始数组转换成大顶堆</p>
+<p>把无序数组转换成如下二叉树，我们可以看到有4颗子树。我们从下往上，一步步的构造大顶堆。</p>
+<p>![image-20191026225914046](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026225914046.png)</p>
+<p>步骤一：把子树(1)构造成大顶堆，12和10交换。</p>
+<p>![image-20191026230852631](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026230852631.png)</p>
+<p>步骤二：对子树(2)构造大顶堆，发现子树(2)已经满足大顶堆，不需要交换</p>
+<p>![image-20191026231040389](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026231040389.png)</p>
+<p>步骤三：对子树(3)构造大顶堆，7和12交换，然后7和10交换。</p>
+<p>注意：需要每一颗子树分别满足大顶堆，不需要左右2颗子树有关联关系。</p>
+<p>例如：左子树(3)满足大顶堆，右子树(2)满足大顶堆；但是左子树(3)和右子树(2)没有什么关系。</p>
+<p>不需要左子树(3)的每个节点都大于右子树(2)；或者左子树(3)的每个节点都小于右子树(2)。</p>
+<p>![image-20191026231151967](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026231151967.png)</p>
+<p>步骤三：对子树(4)构造大顶堆，4和15交换，4和13交换。</p>
+<p>![image-20191026231738573](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026231738573.png)</p>
+<p>调整完成之后的数组</p>
+<p>![image-20191026232701443](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026232701443.png)</p>
+<p>二：把a[0]和a[n-1]进行交换，数组最后一位是是最大的</p>
+<p>数组如下</p>
+<p>![image-20191026232820725](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026232820725.png)</p>
+<p>二叉树如下：</p>
+<p>![image-20191026233307699](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026233307699.png)</p>
+<p>步骤三：调整树(3)，构建数组a[0]~a[n-2]的大顶推</p>
+<p>因为在步骤一构建大顶堆的时候，子树(2)和子树(1)已经满足了大顶堆。</p>
+<p>所以我们只需要调整树(3)，就可以使数组a[0]~a[n-2]的大顶推。</p>
+<p>交换7和13</p>
+<p>![image-20191026233650426](/Users/zhaowu/Library/Application Support/typora-user-images/image-20191026233650426.png)</p>
 
       
     </div>
@@ -389,8 +415,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/18/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2019/09/27/find_2close_num/" rel="next" title="两数之和最接近">
+                <i class="fa fa-chevron-left"></i> 两数之和最接近
               </a>
             
           </div>
@@ -398,10 +424,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/08/31/gopath_and_vendor/" rel="prev" title="GOPATH and Vendor">
-                GOPATH and Vendor <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -533,7 +555,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Makefile初级入门"><span class="nav-number">1.</span> <span class="nav-text">Makefile初级入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一：简单规则"><span class="nav-number">1.1.</span> <span class="nav-text">一：简单规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二：实例"><span class="nav-number">1.2.</span> <span class="nav-text">二：实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-不使用Makefile进行编译和连接"><span class="nav-number">1.2.1.</span> <span class="nav-text">1 不使用Makefile进行编译和连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-使用目标文件进行编译和连接"><span class="nav-number">1.2.2.</span> <span class="nav-text">2 使用目标文件进行编译和连接</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三：代码"><span class="nav-number">1.3.</span> <span class="nav-text">三：代码</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大顶堆的概念："><span class="nav-number">1.</span> <span class="nav-text">大顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小顶堆的概念："><span class="nav-number">2.</span> <span class="nav-text">小顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从小到大排序："><span class="nav-number">3.</span> <span class="nav-text">从小到大排序：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的性质："><span class="nav-number">3.1.</span> <span class="nav-text">二叉树的性质：</span></a></li></ol></li></ol></div>
             
 
           </div>
