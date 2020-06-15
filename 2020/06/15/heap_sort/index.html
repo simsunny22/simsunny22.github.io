@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="go,">
+  <meta name="keywords" content="sort,">
 
 
 
@@ -79,18 +79,29 @@
 
 
 
-<meta name="description" content="简单介绍go项目编译中的一些概念">
-<meta name="keywords" content="go">
+<meta name="description" content="堆排序">
+<meta name="keywords" content="sort">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GOPATH and Vendor">
-<meta property="og:url" content="http://yoursite.com/2019/08/31/gopath_and_vendor/index.html">
+<meta property="og:title" content="堆排序问题">
+<meta property="og:url" content="http://yoursite.com/2020/06/15/heap_sort/index.html">
 <meta property="og:site_name" content="wz&#39;s blog">
-<meta property="og:description" content="简单介绍go项目编译中的一些概念">
+<meta property="og:description" content="堆排序">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-09-01T13:52:42.892Z">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026225622667.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026225914046.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026230852631.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026231040389.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026231151967.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026231738573.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026232701443.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026232820725.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026233307699.png">
+<meta property="og:image" content="http://yoursite.com/images/heap_sort/image-20191026233650426.png">
+<meta property="og:updated_time" content="2020-06-15T23:49:03.728Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="GOPATH and Vendor">
-<meta name="twitter:description" content="简单介绍go项目编译中的一些概念">
+<meta name="twitter:title" content="堆排序问题">
+<meta name="twitter:description" content="堆排序">
+<meta name="twitter:image" content="http://yoursite.com/images/heap_sort/image-20191026225622667.png">
 
 
 
@@ -120,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/08/31/gopath_and_vendor/">
+  <link rel="canonical" href="http://yoursite.com/2020/06/15/heap_sort/">
 
 
 
 
 
-  <title>GOPATH and Vendor | wz's blog</title>
+  <title>堆排序问题 | wz's blog</title>
   
 
 
@@ -263,7 +274,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/31/gopath_and_vendor/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/15/heap_sort/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wz">
@@ -280,7 +291,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GOPATH and Vendor</h1>
+          <h1 class="post-title" itemprop="name headline">堆排序问题</h1>
         
 
         <div class="post-meta">
@@ -292,8 +303,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-31T16:55:44+08:00">
-                2019-08-31
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-15T23:20:35+08:00">
+                2020-06-15
               </time>
             
 
@@ -315,8 +326,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/go/" itemprop="url" rel="index">
-                    <span itemprop="name">go</span>
+                  <a href="/categories/sort/" itemprop="url" rel="index">
+                    <span itemprop="name">sort</span>
                   </a>
                 </span>
 
@@ -357,65 +368,65 @@
       
 
       
-        <p>简单介绍go项目编译中的一些概念</p>
+        <p>堆排序</p>
 <a id="more"></a>
 
-
-
-<h1 id="GOROOT-and-GOPATH"><a href="#GOROOT-and-GOPATH" class="headerlink" title="GOROOT and GOPATH"></a>GOROOT and GOPATH</h1><p>GOROOT：该环境变量的值为 Go 语言的当前安装目录。</p>
-<p>GOPATH：在go build的时候，会在GOPATH的目录下搜索包；GOPATH可以有多个路径(但是不建议)。</p>
-<h1 id="GOPATH-简单介绍"><a href="#GOPATH-简单介绍" class="headerlink" title="GOPATH  简单介绍"></a>GOPATH  简单介绍</h1><p>GOPATH的目录下需要包含bin，pkg，src的子目录</p>
-<p>bin 存放的可执行文件(通过 go install 命令生成)</p>
-<p>pkg 存放归档文件(go install 命令生成.a文件，存放编译过的静态库，目的是加快编译连接) </p>
-<p>src 存放源码文件(每个子目录都是一个代码包）</p>
-<p><strong>不是所有的go代码都要放到GOPATH中。</strong></p>
-<h1 id="go的文件分类"><a href="#go的文件分类" class="headerlink" title="go的文件分类"></a>go的文件分类</h1><p>命令源码文件(main文件)：包含main函数的go文件。(可以执行go build和go install命令)</p>
-<p>库源码文件：普通的go文件。</p>
-<p>测试源码文件：用于测试的go文件。</p>
-<h1 id="go命令的区别"><a href="#go命令的区别" class="headerlink" title="go命令的区别"></a>go命令的区别</h1><p>go run :该目录下可以有多个命令源码文件(main文件)，但是一次只能编译一个(main文件)</p>
-<p>go build:该项目下只能有一个源码文件(main文件)，编译出来的名称默认是该项目的目录名称</p>
-<p>go install:该项目下只能有一个源码文件(main文件)，编译出来的可执行文件移动到GOPATH的bin目录和pkg目录下。</p>
-<h1 id="go-的依赖引用-vendor"><a href="#go-的依赖引用-vendor" class="headerlink" title="go 的依赖引用(vendor)"></a>go 的依赖引用(vendor)</h1><h2 id="go项目不在GOPATH中"><a href="#go项目不在GOPATH中" class="headerlink" title="go项目不在GOPATH中"></a>go项目不在GOPATH中</h2><p>(1)相对路径的方式引入包(import ./my_lib)</p>
-<p>(2)绝对路径的方式引入包(import test/my_lib)</p>
-<p>(3)引入GOPATH路径下的包下(import my_lib1)</p>
-<p>(4)不支持通过vendor目录的方式引入包</p>
-<h2 id="go项目在GOPATH"><a href="#go项目在GOPATH" class="headerlink" title="go项目在GOPATH"></a>go项目在GOPATH</h2><p>(1)不支持相对路径的方式引入包</p>
-<p>(2)绝对路径的方式引入包(import test/my_lib)</p>
-<p>(3)引入GOPATH路径下的包(import my_lib1)</p>
-<p>(4)通过vendor目录的方式引入包</p>
-<h2 id="vendor目录引入包的方式"><a href="#vendor目录引入包的方式" class="headerlink" title="vendor目录引入包的方式"></a>vendor目录引入包的方式</h2><p>(1)顶级目录只会查找本级vendor目录下的package；如果没有，就回去GOPATH中查找package</p>
-<p>(2)子目录首先会查找本级vendor目录下的package；如果没有，再查找上一级vendor目录下的package，直到查找到顶级vendor目录下的package；如果还没有，才会去GOPATH中查找package</p>
-<p>(3)github上有对vendor的明确解释，vendor的目录必须是所在项目的包内，不能允许为non-package的目录，也就是说vendor的目录路径应该位于GOPATH下的包内，这是对vendor顶层目录路径的要求</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>go项目不在GOPATH中</th>
-<th>go项目在GOPATH中</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>相对路径的方式引入包</td>
-<td>支持</td>
-<td>不支持</td>
-</tr>
-<tr>
-<td>绝对路径的方式引入包</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>通过GOPATH路径引入包</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>通过vendor目录方式引入包</td>
-<td>不支持</td>
-<td>支持</td>
-</tr>
-</tbody></table>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://halfrost.com/go_command/" target="_blank" rel="noopener">https://halfrost.com/go_command/</a></p>
+<h1 id="大顶堆的概念："><a href="#大顶堆的概念：" class="headerlink" title="大顶堆的概念："></a>大顶堆的概念：</h1><p>父节点要大于左右孩子节点</p>
+<h1 id="小顶堆的概念："><a href="#小顶堆的概念：" class="headerlink" title="小顶堆的概念："></a>小顶堆的概念：</h1><p>父节点要小于左右孩子节点</p>
+<h1 id="从小到大排序："><a href="#从小到大排序：" class="headerlink" title="从小到大排序："></a>从小到大排序：</h1><p>(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组)</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<p>交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。</p>
+<p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足大顶堆</p>
+<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
+<p>#从大到小排序</p>
+<p>(1)构建小顶堆。(把无序的数组，按照小顶堆进行排序，此时的并不是有序数组，而是满足小顶堆的数组)</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<p>交换完成后，最后一个元素a[n]就是该数组中最小的元素，a[0]~a[n-1]此时不满足小顶堆。</p>
+<p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足小顶堆</p>
+<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
+<h2 id="二叉树的性质："><a href="#二叉树的性质：" class="headerlink" title="二叉树的性质："></a>二叉树的性质：</h2><p>对于二叉树，根节点是1</p>
+<p>父节点是n，左孩在是2n，右孩子是2n+1</p>
+<p>孩子节点是n，父节点是n/2</p>
+<p>比如子节点是2(左孩子)，父节点是1</p>
+<p>比如子节点是3(有孩子)，父节点是1.5-&gt;1</p>
+<p>对于二叉树，根节点是0</p>
+<p>父节点是n，左孩子是2n+1，右孩子是2n+2</p>
+<p>孩子节点是n，父亲节点是（n-1)/2</p>
+<p>比如子节点是1，父亲节点是0</p>
+<p>比如子节点是2，附近节点是0.5-&gt;0</p>
+<p>假设给定的无序数组如下，我们使用堆排序进行排序。</p>
+<p>(1)先构造数组a[0]-a[n-1]，使它们满足大顶堆。</p>
+<p>(2)把数组a[0]和a[n-1]进行交换；保证最大的数，在数组a[0]-a[n-1]的最后一位</p>
+<p>(3)然后调整数组a[0]-a[n-2]，使它们满足大顶堆。</p>
+<p>(4)把数组a[0]和a[n-2]进行交换；保证最大的数，在数组a[0]-a[n-2]的最后一位</p>
+<p>(5)一直重复(3)，(4)的步骤，直到调整数组调整数组a[0]-a[1]，使它们满足大顶堆。</p>
+<p><img src="/images/heap_sort/image-20191026225622667.png" alt="image-20191026225622667"></p>
+<p>一： 把原始数组转换成大顶堆</p>
+<p>把无序数组转换成如下二叉树，我们可以看到有4颗子树。我们从下往上，一步步的构造大顶堆。</p>
+<p><img src="/images/heap_sort/image-20191026225914046.png" alt="image-20191026225914046"></p>
+<p>步骤一：把子树(1)构造成大顶堆，12和10交换。</p>
+<p><img src="/images/heap_sort/image-20191026230852631.png" alt="image-20191026230852631"></p>
+<p>步骤二：对子树(2)构造大顶堆，发现子树(2)已经满足大顶堆，不需要交换</p>
+<p><img src="/images/heap_sort/image-20191026231040389.png" alt="image-20191026231040389"></p>
+<p>步骤三：对子树(3)构造大顶堆，7和12交换，然后7和10交换。</p>
+<p>注意：需要每一颗子树分别满足大顶堆，不需要左右2颗子树有关联关系。</p>
+<p>例如：左子树(3)满足大顶堆，右子树(2)满足大顶堆；但是左子树(3)和右子树(2)没有什么关系。</p>
+<p>不需要左子树(3)的每个节点都大于右子树(2)；或者左子树(3)的每个节点都小于右子树(2)。</p>
+<p><img src="/images/heap_sort/image-20191026231151967.png" alt="image-20191026231151967"></p>
+<p>步骤三：对子树(4)构造大顶堆，4和15交换，4和13交换。</p>
+<p><img src="/images/heap_sort/image-20191026231738573.png" alt="image-20191026231738573"></p>
+<p>调整完成之后的数组</p>
+<p><img src="/images/heap_sort/image-20191026232701443.png" alt="image-20191026232701443"></p>
+<p>二：把a[0]和a[n-1]进行交换，数组最后一位是是最大的</p>
+<p>数组如下</p>
+<p><img src="/images/heap_sort/image-20191026232820725.png" alt="image-20191026232820725"></p>
+<p>二叉树如下：</p>
+<p><img src="/images/heap_sort/image-20191026233307699.png" alt="image-20191026233307699"></p>
+<p>步骤三：调整树(3)，构建数组a[0]~a[n-2]的大顶推</p>
+<p>因为在步骤一构建大顶堆的时候，子树(2)和子树(1)已经满足了大顶堆。</p>
+<p>所以我们只需要调整树(3)，就可以使数组a[0]~a[n-2]的大顶推。</p>
+<p>交换7和13</p>
+<p><img src="/images/heap_sort/image-20191026233650426.png" alt="image-20191026233650426"></p>
 
       
     </div>
@@ -433,7 +444,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/go/" rel="tag"># go</a>
+            <a href="/tags/sort/" rel="tag"># sort</a>
           
         </div>
       
@@ -446,8 +457,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/18/Makefile/" rel="next" title="Makefile">
-                <i class="fa fa-chevron-left"></i> Makefile
+              <a href="/2019/09/27/find_2close_num/" rel="next" title="两数之和最接近">
+                <i class="fa fa-chevron-left"></i> 两数之和最接近
               </a>
             
           </div>
@@ -456,8 +467,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/09/01/静态动态库/" rel="prev" title="静态库和动态库">
-                静态库和动态库 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/06/15/mid/" rel="prev" title="两个有序数组中位数的问题">
+                两个有序数组中位数的问题 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -590,7 +601,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GOROOT-and-GOPATH"><span class="nav-number">1.</span> <span class="nav-text">GOROOT and GOPATH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GOPATH-简单介绍"><span class="nav-number">2.</span> <span class="nav-text">GOPATH  简单介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go的文件分类"><span class="nav-number">3.</span> <span class="nav-text">go的文件分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go命令的区别"><span class="nav-number">4.</span> <span class="nav-text">go命令的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-的依赖引用-vendor"><span class="nav-number">5.</span> <span class="nav-text">go 的依赖引用(vendor)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目不在GOPATH中"><span class="nav-number">5.1.</span> <span class="nav-text">go项目不在GOPATH中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目在GOPATH"><span class="nav-number">5.2.</span> <span class="nav-text">go项目在GOPATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vendor目录引入包的方式"><span class="nav-number">5.3.</span> <span class="nav-text">vendor目录引入包的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大顶堆的概念："><span class="nav-number">1.</span> <span class="nav-text">大顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小顶堆的概念："><span class="nav-number">2.</span> <span class="nav-text">小顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从小到大排序："><span class="nav-number">3.</span> <span class="nav-text">从小到大排序：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的性质："><span class="nav-number">3.1.</span> <span class="nav-text">二叉树的性质：</span></a></li></ol></li></ol></div>
             
 
           </div>
