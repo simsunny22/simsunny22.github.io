@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="io,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="简单介绍io模型和aio的使用">
+<meta name="keywords" content="io">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aio">
+<meta property="og:url" content="http://yoursite.com/2020/06/23/aio/index.html">
+<meta property="og:site_name" content="wz&#39;s blog">
+<meta property="og:description" content="简单介绍io模型和aio的使用">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/aio/aio-brief.gif">
+<meta property="og:image" content="http://yoursite.com/images/aio/aio-block-sync.gif">
+<meta property="og:image" content="http://yoursite.com/images/aio/aio-nonblock-sync.gif">
+<meta property="og:image" content="http://yoursite.com/images/aio/aio-block-async.gif">
+<meta property="og:image" content="http://yoursite.com/images/aio/aio-nonblock-async.gif">
+<meta property="og:updated_time" content="2020-06-24T01:28:28.116Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="aio">
+<meta name="twitter:description" content="简单介绍io模型和aio的使用">
+<meta name="twitter:image" content="http://yoursite.com/images/aio/aio-brief.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/23/aio/">
+
+
+
+
+
+  <title>aio | wz's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wz's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">good good study, day day up</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/23/aio/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wz">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wz's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">aio</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-23T15:21:44+08:00">
+                2020-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/io/" itemprop="url" rel="index">
+                    <span itemprop="name">io</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+              <div class="post-description">
+                  简单介绍io模型和aio的使用
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="IO模型和异步AIO的介绍"><a href="#IO模型和异步AIO的介绍" class="headerlink" title="IO模型和异步AIO的介绍"></a>IO模型和异步AIO的介绍</h1><h2 id="IO的模型"><a href="#IO的模型" class="headerlink" title="IO的模型"></a>IO的模型</h2><p><img src="/images/aio/aio-brief.gif" alt="aio-brief"></p>
+<h3 id="数据传输有两段："><a href="#数据传输有两段：" class="headerlink" title="数据传输有两段："></a>数据传输有两段：</h3><p>第一阶段：内核等待数据准备 (Waiting for the data to be ready)。</p>
+<p>第二阶段：将数据从内核拷贝到进程中 (Copying the data from the kernel to the process)。</p>
+<p>第二段为什么会阻塞用户线程呢，因为在拷贝内存的时候，可能发生了缺页中断，如果发生了缺页中断，就会挂起当前用户线程，这方面的相关内容，后续在做分享。</p>
+<h3 id="IO的五种模型"><a href="#IO的五种模型" class="headerlink" title="IO的五种模型"></a>IO的五种模型</h3><p>(1)同步阻塞IO</p>
+<p><img src="/images/aio/aio-block-sync.gif" alt="aio-block-sync"></p>
+<p>同步阻塞IO，两段都被阻塞。</p>
+<p>首先用户线程通过系统调用，陷入内核态等待数据准备完成，这个时候用户的线程被挂起；然后内核态等待IO把数据准备好，然后把数据从内核态拷贝到用户态；最后由操作系统唤起用户线程。</p>
+<p>(2)同步非阻塞IO</p>
+<p><img src="/images/aio/aio-nonblock-sync.gif" alt="aio-nonblock-sync"></p>
+<p>同步非阻塞IO，第一步没有被阻塞，当IO准备好的时候，阻塞用户线程，把数据从内核态拷贝的用户态。</p>
+<p>首先用户线程通过系统调用，陷入内核态，查看IO是否已经准备好了；如果没有准备好，就返回给用户失败；用户线程就再次进行轮训，直到IO已经准备好了(这个时候，用户的线程是不被阻塞的)，返回给用户成功；这个时候用户的线程被阻塞主了，直到把内核态的数据，拷贝到用户态；用户线程才又一次被唤醒。</p>
+<p>(3)多路复用IO</p>
+<p><img src="/images/aio/aio-block-async.gif" alt="aio-block-async"></p>
+<p>select和poll不能算是异步IO，真正的异步IO只有AIO</p>
+<p>select和poll的主要作用是可以监听多个IO，当其中有一个IO准备好的时候，我们就可以处理。</p>
+<p>首先用户线程通过系统调用，陷入内核态，异步的等待多个IO准备完成；然后通过通过select或者poll系统调用，陷入，等待其中的IO返回成功。然后用户线程在通过系统调用，把准备好的IO从内核态拷贝到用户态。</p>
+<p>(4)信号驱动式IO</p>
+<p>了解的不多，就不多做介绍了。</p>
+<p>(5)异步IO</p>
+<p><img src="/images/aio/aio-nonblock-async.gif" alt="aio-nonblock-async"></p>
+<p>真正的异步IO，当我们发起aio的时候，用户的线程不被阻塞。通过系统调用，陷入内核态，异步的等待IO，当IO准备好的时候，内核的数据通过信号或者回调的方式异步的返回给用户线程。这个过程，用户的线程都是不被阻塞的。</p>
+<h2 id="AIO的使用"><a href="#AIO的使用" class="headerlink" title="AIO的使用"></a>AIO的使用</h2><p>AIO目前有两种一只是libaio，一种是posix aio</p>
+<h3 id="POSIX-AIO的两种实用方式"><a href="#POSIX-AIO的两种实用方式" class="headerlink" title="POSIX AIO的两种实用方式"></a>POSIX AIO的两种实用方式</h3><p>下面介绍POSIX AIO的两种实用模式</p>
+<p>(1)用户线程通过不断轮训，同步等待IO完成</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化aio的数据结构		</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">aiocb</span> <span class="title">cb</span>;</span></span><br><span class="line"><span class="built_in">memset</span>(&amp;cb, <span class="number">0</span>, <span class="keyword">sizeof</span>(struct aiocb));</span><br><span class="line">cb.aio_nbytes = SIZE_TO_READ;</span><br><span class="line">cb.aio_fildes = fd;</span><br><span class="line">cb.aio_offset = <span class="number">0</span>;</span><br><span class="line"> cb.aio_buf = buffer;</span><br><span class="line"><span class="comment">//调用aio_read 发起异步的读请求</span></span><br><span class="line"><span class="keyword">if</span> (aio_read(&amp;cb) == <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Unable to create request!\n"</span>);</span><br><span class="line">	<span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"Request enqueued!\n"</span>);</span><br><span class="line"><span class="comment">//通过不断的轮训aio_error来判断，io是否完成</span></span><br><span class="line"><span class="comment">// wait until the request has finished</span></span><br><span class="line"><span class="keyword">while</span>(aio_error(&amp;cb) == EINPROGRESS) &#123;</span><br><span class="line">	(<span class="string">"Working...\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//当io完成后，通过aio_return来判断io是否正确，如果正确，就读出buffer</span></span><br><span class="line"><span class="keyword">int</span> numBytes = aio_return(&amp;cb); <span class="comment">// success?</span></span><br></pre></td></tr></table></figure>
+
+<p>(2)用户线程通过设置callback函数，异步等待IO完成</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当aio异步执行完成的时候，会在新的用户线程中调用设置好的回调函数，来做处理。</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">aio_completion_handler</span><span class="params">(<span class="keyword">sigval_t</span> sigval)</span> </span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aiocb</span>* <span class="title">req</span> = (<span class="title">struct</span> <span class="title">aiocb</span> *)<span class="title">sigval</span>.<span class="title">sival_ptr</span>;</span></span><br><span class="line">  <span class="comment">//检查io是否完成</span></span><br><span class="line">	<span class="comment">/* Did the request complete? */</span></span><br><span class="line">	<span class="keyword">if</span> (aio_error(req) == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="comment">//检查io是否正确</span></span><br><span class="line">    <span class="comment">/* Request completed successfully, get the return status */</span></span><br><span class="line">		<span class="keyword">int</span> ret = aio_return( req );</span><br><span class="line">		<span class="keyword">if</span> (ret != <span class="number">-1</span>) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"aio_completion_handler Success! buffer:%s\n"</span>, req-&gt;aio_buf);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"aio_completion_handler Error!\n"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">free</span>(req);</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//这里动态申请的原因是，延长aio的生命周期，确保在异步返回之前，不会被析构</span></span><br><span class="line"><span class="comment">//here we malloc aio_cb, not struct, to avoid the struct be free</span></span><br><span class="line"><span class="function">struct aiocb* <span class="title">make_aio_cb</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span>* buffer)</span> </span>&#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">aiocb</span>* <span class="title">cb</span> = (<span class="title">struct</span> <span class="title">aiocb</span>*) <span class="title">malloc</span>(<span class="title">sizeof</span>(<span class="title">struct</span> <span class="title">aiocb</span>));</span></span><br><span class="line">        <span class="built_in">memset</span>(cb, <span class="number">0</span>, <span class="keyword">sizeof</span>(struct aiocb));</span><br><span class="line"></span><br><span class="line">        cb-&gt;aio_nbytes = SIZE_TO_READ;</span><br><span class="line">        cb-&gt;aio_fildes = fd;</span><br><span class="line">        cb-&gt;aio_offset = <span class="number">0</span>;</span><br><span class="line">        cb-&gt;aio_buf = buffer;</span><br><span class="line">  			<span class="comment">//设置aio的通知方式是回调的方式</span></span><br><span class="line">        <span class="comment">//set aio return by other thread</span></span><br><span class="line">        cb-&gt;aio_sigevent.sigev_notify = SIGEV_THREAD;</span><br><span class="line">  			<span class="comment">//设置aio的回调函数</span></span><br><span class="line">        <span class="comment">//set aio callback func</span></span><br><span class="line">        cb-&gt;aio_sigevent.sigev_notify_function = aio_completion_handler;</span><br><span class="line">        <span class="comment">//set aio callback params</span></span><br><span class="line">        cb-&gt;aio_sigevent.sigev_value.sival_ptr = cb;</span><br><span class="line">        cb-&gt;aio_sigevent.sigev_notify_attributes = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">return</span> cb;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">aio_thread_test</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span>* buffer)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"aio_thread_test ppid:%d, pid:%d, tid:%d \n"</span>, getppid(), getpid(), gettid());</span><br><span class="line">        <span class="comment">//动态申请了aio的数据结构，确保在函数执行完成后，不被析构</span></span><br><span class="line">  			<span class="class"><span class="keyword">struct</span> <span class="title">aiocb</span>* <span class="title">cb</span>  = <span class="title">make_aio_cb</span>(<span class="title">fd</span>, <span class="title">buffer</span>);</span></span><br><span class="line">        <span class="comment">//发起异步io调用，然后异步的等待回调</span></span><br><span class="line">  			<span class="keyword">int</span> ret = aio_read(cb);</span><br><span class="line">        <span class="keyword">if</span> (ret &lt; <span class="number">0</span> ) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"aio_read error"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h2><p><a href="http://cxd2014.github.io/2018/12/09/aio/" target="_blank" rel="noopener">POSIX AIO的APiI</a></p>
+<p><a href="https://jin-yang.github.io/post/linux-program-aio.html" target="_blank" rel="noopener">libaio和posix aio介绍</a> </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/io/" rel="tag"># io</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/15/heap_sort/" rel="next" title="堆排序问题">
+                <i class="fa fa-chevron-left"></i> 堆排序问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/23/mid/" rel="prev" title="两个有序数组中位数的问题">
+                两个有序数组中位数的问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IO模型和异步AIO的介绍"><span class="nav-number">1.</span> <span class="nav-text">IO模型和异步AIO的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IO的模型"><span class="nav-number">1.1.</span> <span class="nav-text">IO的模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据传输有两段："><span class="nav-number">1.1.1.</span> <span class="nav-text">数据传输有两段：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO的五种模型"><span class="nav-number">1.1.2.</span> <span class="nav-text">IO的五种模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AIO的使用"><span class="nav-number">1.2.</span> <span class="nav-text">AIO的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#POSIX-AIO的两种实用方式"><span class="nav-number">1.2.1.</span> <span class="nav-text">POSIX AIO的两种实用方式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关资料"><span class="nav-number">1.3.</span> <span class="nav-text">相关资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
