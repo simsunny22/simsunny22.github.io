@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion" lang="en">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
@@ -126,7 +126,7 @@
 
 
 
-  <title>GOPATH and Vendor | wz's blog</title>
+  <title>GOPATH and Vendor | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -145,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -359,63 +359,72 @@
       
         <p>简单介绍go项目编译中的一些概念</p>
 <a id="more"></a>
-
-
-
-<h1 id="GOROOT-and-GOPATH"><a href="#GOROOT-and-GOPATH" class="headerlink" title="GOROOT and GOPATH"></a>GOROOT and GOPATH</h1><p>GOROOT：该环境变量的值为 Go 语言的当前安装目录。</p>
+<h1 id="goroot-and-gopath">GOROOT and GOPATH</h1>
+<p>GOROOT：该环境变量的值为 Go 语言的当前安装目录。</p>
 <p>GOPATH：在go build的时候，会在GOPATH的目录下搜索包；GOPATH可以有多个路径(但是不建议)。</p>
-<h1 id="GOPATH-简单介绍"><a href="#GOPATH-简单介绍" class="headerlink" title="GOPATH  简单介绍"></a>GOPATH  简单介绍</h1><p>GOPATH的目录下需要包含bin，pkg，src的子目录</p>
+<h1 id="gopath-简单介绍">GOPATH  简单介绍</h1>
+<p>GOPATH的目录下需要包含bin，pkg，src的子目录</p>
 <p>bin 存放的可执行文件(通过 go install 命令生成)</p>
-<p>pkg 存放归档文件(go install 命令生成.a文件，存放编译过的静态库，目的是加快编译连接) </p>
+<p>pkg 存放归档文件(go install 命令生成.a文件，存放编译过的静态库，目的是加快编译连接)</p>
 <p>src 存放源码文件(每个子目录都是一个代码包）</p>
 <p><strong>不是所有的go代码都要放到GOPATH中。</strong></p>
-<h1 id="go的文件分类"><a href="#go的文件分类" class="headerlink" title="go的文件分类"></a>go的文件分类</h1><p>命令源码文件(main文件)：包含main函数的go文件。(可以执行go build和go install命令)</p>
+<h1 id="go的文件分类">go的文件分类</h1>
+<p>命令源码文件(main文件)：包含main函数的go文件。(可以执行go build和go install命令)</p>
 <p>库源码文件：普通的go文件。</p>
 <p>测试源码文件：用于测试的go文件。</p>
-<h1 id="go命令的区别"><a href="#go命令的区别" class="headerlink" title="go命令的区别"></a>go命令的区别</h1><p>go run :该目录下可以有多个命令源码文件(main文件)，但是一次只能编译一个(main文件)</p>
+<h1 id="go命令的区别">go命令的区别</h1>
+<p>go run :该目录下可以有多个命令源码文件(main文件)，但是一次只能编译一个(main文件)</p>
 <p>go build:该项目下只能有一个源码文件(main文件)，编译出来的名称默认是该项目的目录名称</p>
 <p>go install:该项目下只能有一个源码文件(main文件)，编译出来的可执行文件移动到GOPATH的bin目录和pkg目录下。</p>
-<h1 id="go-的依赖引用-vendor"><a href="#go-的依赖引用-vendor" class="headerlink" title="go 的依赖引用(vendor)"></a>go 的依赖引用(vendor)</h1><h2 id="go项目不在GOPATH中"><a href="#go项目不在GOPATH中" class="headerlink" title="go项目不在GOPATH中"></a>go项目不在GOPATH中</h2><p>(1)相对路径的方式引入包(import ./my_lib)</p>
+<h1 id="go-的依赖引用vendor">go 的依赖引用(vendor)</h1>
+<h2 id="go项目不在gopath中">go项目不在GOPATH中</h2>
+<p>(1)相对路径的方式引入包(import ./my_lib)</p>
 <p>(2)绝对路径的方式引入包(import test/my_lib)</p>
 <p>(3)引入GOPATH路径下的包下(import my_lib1)</p>
 <p>(4)不支持通过vendor目录的方式引入包</p>
-<h2 id="go项目在GOPATH"><a href="#go项目在GOPATH" class="headerlink" title="go项目在GOPATH"></a>go项目在GOPATH</h2><p>(1)不支持相对路径的方式引入包</p>
+<h2 id="go项目在gopath">go项目在GOPATH</h2>
+<p>(1)不支持相对路径的方式引入包</p>
 <p>(2)绝对路径的方式引入包(import test/my_lib)</p>
 <p>(3)引入GOPATH路径下的包(import my_lib1)</p>
 <p>(4)通过vendor目录的方式引入包</p>
-<h2 id="vendor目录引入包的方式"><a href="#vendor目录引入包的方式" class="headerlink" title="vendor目录引入包的方式"></a>vendor目录引入包的方式</h2><p>(1)顶级目录只会查找本级vendor目录下的package；如果没有，就回去GOPATH中查找package</p>
+<h2 id="vendor目录引入包的方式">vendor目录引入包的方式</h2>
+<p>(1)顶级目录只会查找本级vendor目录下的package；如果没有，就回去GOPATH中查找package</p>
 <p>(2)子目录首先会查找本级vendor目录下的package；如果没有，再查找上一级vendor目录下的package，直到查找到顶级vendor目录下的package；如果还没有，才会去GOPATH中查找package</p>
 <p>(3)github上有对vendor的明确解释，vendor的目录必须是所在项目的包内，不能允许为non-package的目录，也就是说vendor的目录路径应该位于GOPATH下的包内，这是对vendor顶层目录路径的要求</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<h2 id="总结">总结</h2>
+<table>
 <thead>
-<tr>
+<tr class="header">
 <th></th>
 <th>go项目不在GOPATH中</th>
 <th>go项目在GOPATH中</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr class="odd">
 <td>相对路径的方式引入包</td>
 <td>支持</td>
 <td>不支持</td>
 </tr>
-<tr>
+<tr class="even">
 <td>绝对路径的方式引入包</td>
 <td>支持</td>
 <td>支持</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>通过GOPATH路径引入包</td>
 <td>支持</td>
 <td>支持</td>
 </tr>
-<tr>
+<tr class="even">
 <td>通过vendor目录方式引入包</td>
 <td>不支持</td>
 <td>支持</td>
 </tr>
-</tbody></table>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://halfrost.com/go_command/" target="_blank" rel="noopener">https://halfrost.com/go_command/</a></p>
+</tbody>
+</table>
+<h1 id="参考">参考</h1>
+<p>https://halfrost.com/go_command/</p>
 
       
     </div>
@@ -535,7 +544,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -546,7 +555,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -557,7 +566,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -590,7 +599,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GOROOT-and-GOPATH"><span class="nav-number">1.</span> <span class="nav-text">GOROOT and GOPATH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GOPATH-简单介绍"><span class="nav-number">2.</span> <span class="nav-text">GOPATH  简单介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go的文件分类"><span class="nav-number">3.</span> <span class="nav-text">go的文件分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go命令的区别"><span class="nav-number">4.</span> <span class="nav-text">go命令的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-的依赖引用-vendor"><span class="nav-number">5.</span> <span class="nav-text">go 的依赖引用(vendor)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目不在GOPATH中"><span class="nav-number">5.1.</span> <span class="nav-text">go项目不在GOPATH中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目在GOPATH"><span class="nav-number">5.2.</span> <span class="nav-text">go项目在GOPATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vendor目录引入包的方式"><span class="nav-number">5.3.</span> <span class="nav-text">vendor目录引入包的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#goroot-and-gopath"><span class="nav-number">1.</span> <span class="nav-text">GOROOT and GOPATH</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gopath-简单介绍"><span class="nav-number">2.</span> <span class="nav-text">GOPATH  简单介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go的文件分类"><span class="nav-number">3.</span> <span class="nav-text">go的文件分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go命令的区别"><span class="nav-number">4.</span> <span class="nav-text">go命令的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#go-的依赖引用vendor"><span class="nav-number">5.</span> <span class="nav-text">go 的依赖引用(vendor)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目不在gopath中"><span class="nav-number">5.1.</span> <span class="nav-text">go项目不在GOPATH中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go项目在gopath"><span class="nav-number">5.2.</span> <span class="nav-text">go项目在GOPATH</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vendor目录引入包的方式"><span class="nav-number">5.3.</span> <span class="nav-text">vendor目录引入包的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -764,7 +773,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -817,6 +826,8 @@
   
 
   
+  
+
 
   
 

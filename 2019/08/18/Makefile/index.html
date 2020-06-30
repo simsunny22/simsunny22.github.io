@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion" lang="en">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
@@ -125,7 +125,7 @@
 
 
 
-  <title>Makefile | wz's blog</title>
+  <title>Makefile | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -144,7 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -336,35 +336,33 @@
       
         <p>makefile的简单介绍和使用</p>
 <a id="more"></a>
-
-<h3 id="Makefile初级入门"><a href="#Makefile初级入门" class="headerlink" title="Makefile初级入门"></a><strong>Makefile初级入门</strong></h3><h4 id="一：简单规则"><a href="#一：简单规则" class="headerlink" title="一：简单规则"></a>一：简单规则</h4><p><strong>三要素(target,prerequisites,command)：</strong></p>
+<h3 id="makefile初级入门"><strong>Makefile初级入门</strong></h3>
+<h4 id="一简单规则">一：简单规则</h4>
+<p><strong>三要素(target,prerequisites,command)：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">target: prerequisites</span><br><span class="line">	command</span><br></pre></td></tr></table></figure>
-
 <p>1 target: 可以是目标文件(例如:main.o);可以是可执行文件(例如:test);可以是一个标签</p>
 <p>2 prerequisites: 跟在target后面，表示生成该target需要用到的依赖</p>
 <p>3 command: 该target要执行的命令</p>
 <p><strong>注意：</strong></p>
 <p>target后面如果有prerequisites，执行make命令时，prerequisites中有一个以上的文件比target文件要新的话，command所定义的命令就会被执行。</p>
 <p>target后面如果没有prerequisites，执行make命令后，因为prerequisites后面没有文件，所以不会执行command所定义的命令；如果想要执行command定义的命令的话，就需要显示执行make target。</p>
-<h4 id="二：实例"><a href="#二：实例" class="headerlink" title="二：实例"></a>二：实例</h4><p>现在我们有三个文件，分别是stu.h stu.c main.c</p>
+<h4 id="二实例">二：实例</h4>
+<p>现在我们有三个文件，分别是stu.h stu.c main.c</p>
 <p>我们可以直接通过gcc命令编译或者通过编写makefile文件，然后通过make命令进行编译</p>
-<h5 id="1-不使用Makefile进行编译和连接"><a href="#1-不使用Makefile进行编译和连接" class="headerlink" title="1 不使用Makefile进行编译和连接"></a>1 不使用Makefile进行编译和连接</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">g++ -c main.c #编译出目标文件 main.o</span><br><span class="line">g++ -c stu.c #编译出目标文件 stu.o</span><br><span class="line">g++ -o test main.o stu.o #把两个目标文件连接起来，生成可执行文件test</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-使用目标文件进行编译和连接"><a href="#2-使用目标文件进行编译和连接" class="headerlink" title="2 使用目标文件进行编译和连接"></a>2 使用目标文件进行编译和连接</h5><p><strong>Makefile文件</strong></p>
+<h5 id="不使用makefile进行编译和连接">1 不使用Makefile进行编译和连接</h5>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">g++ -c main.c #编译出目标文件 main.o</span><br><span class="line">g++ -c stu.c #编译出目标文件 stu.o</span><br><span class="line">g++ -o test main.o stu.o #把两个目标文件连接起来，生成可执行文件test</span><br></pre></td></tr></table></figure>
+<h5 id="使用目标文件进行编译和连接">2 使用目标文件进行编译和连接</h5>
+<p><strong>Makefile文件</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cc = g++ #cc表示编译命令变量(如果是c代码，把g++替换成gcc，就不用逐个替换)</span><br><span class="line">objects = main.o stu.o #当你的工程量增加的时候，使用变量可以方便的增加目标文件</span><br><span class="line"></span><br><span class="line">test : $&#123;objects&#125; #target是可执行文件</span><br><span class="line">        $(cc) -o test $&#123;objects&#125;</span><br><span class="line">main.o : main.c stu.h #target是目标文件</span><br><span class="line">        $(cc) -c main.c</span><br><span class="line">stu.o : stu.c stu.h #target是目标文件</span><br><span class="line">        $(cc) -c stu.c</span><br><span class="line">clean : #target是标签</span><br><span class="line">        rm test main.o stu.o</span><br></pre></td></tr></table></figure>
-
 <p><strong>执行make和make clean命令</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make #编译出目标文件 main.o stu.o 和可执行文件 test</span><br><span class="line">make clean #清理目标文件 main.o stu.o 和可执行文件 test</span><br></pre></td></tr></table></figure>
-
-<h4 id="三：代码"><a href="#三：代码" class="headerlink" title="三：代码"></a>三：代码</h4><p><strong>(1) stu.h</strong></p>
+<h4 id="三代码">三：代码</h4>
+<p><strong>(1) stu.h</strong></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">stu</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">        stu(<span class="built_in">string</span> name_, <span class="keyword">uint16_t</span> age_);</span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">string</span>   name;</span><br><span class="line">        <span class="keyword">uint16_t</span> age;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
 <p><strong>(2) stu.c</strong></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stu.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">stu::stu(<span class="built_in">string</span> name_, <span class="keyword">uint16_t</span> age_) &#123;</span><br><span class="line">        name = name_;</span><br><span class="line">        age = age_;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> stu::print() &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"stu name:%s, age:%d \n"</span>, name.c_str(), age);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p><strong>(3) main.c</strong></p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stu.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function">stu <span class="title">stu1</span><span class="params">(<span class="string">"wz"</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">        <span class="function">stu <span class="title">stu2</span><span class="params">(<span class="string">"wd"</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">        stu1.print();</span><br><span class="line">        stu2.print();</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"------ end Makefile ------ \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -478,7 +476,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -489,7 +487,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -500,7 +498,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -533,7 +531,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Makefile初级入门"><span class="nav-number">1.</span> <span class="nav-text">Makefile初级入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一：简单规则"><span class="nav-number">1.1.</span> <span class="nav-text">一：简单规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二：实例"><span class="nav-number">1.2.</span> <span class="nav-text">二：实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-不使用Makefile进行编译和连接"><span class="nav-number">1.2.1.</span> <span class="nav-text">1 不使用Makefile进行编译和连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-使用目标文件进行编译和连接"><span class="nav-number">1.2.2.</span> <span class="nav-text">2 使用目标文件进行编译和连接</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三：代码"><span class="nav-number">1.3.</span> <span class="nav-text">三：代码</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#makefile初级入门"><span class="nav-number">1.</span> <span class="nav-text">Makefile初级入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一简单规则"><span class="nav-number">1.1.</span> <span class="nav-text">一：简单规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二实例"><span class="nav-number">1.2.</span> <span class="nav-text">二：实例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#不使用makefile进行编译和连接"><span class="nav-number">1.2.1.</span> <span class="nav-text">1 不使用Makefile进行编译和连接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用目标文件进行编译和连接"><span class="nav-number">1.2.2.</span> <span class="nav-text">2 使用目标文件进行编译和连接</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三代码"><span class="nav-number">1.3.</span> <span class="nav-text">三：代码</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -707,7 +705,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -760,6 +758,8 @@
   
 
   
+  
+
 
   
 

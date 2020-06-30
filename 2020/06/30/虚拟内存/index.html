@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="内存,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="虚拟内存和物理内存的映射">
+<meta name="keywords" content="内存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟内存">
+<meta property="og:url" content="http://yoursite.com/2020/06/30/虚拟内存/index.html">
+<meta property="og:site_name" content="wz&#39;s blog">
+<meta property="og:description" content="虚拟内存和物理内存的映射">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/mmu.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/wz.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200629172108753.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200629173338935.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200630100256878.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200630102341383.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200630104537579.png">
+<meta property="og:image" content="http://yoursite.com/images/虚拟内存/image-20200630105547741.png">
+<meta property="og:updated_time" content="2020-06-30T06:49:45.353Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="虚拟内存">
+<meta name="twitter:description" content="虚拟内存和物理内存的映射">
+<meta name="twitter:image" content="http://yoursite.com/images/虚拟内存/mmu.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/06/30/虚拟内存/">
+
+
+
+
+
+  <title>虚拟内存 | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wz's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">good good study, day day up</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/30/虚拟内存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wz">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wz's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">虚拟内存</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-30T14:22:25+08:00">
+                2020-06-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/操作系统/" itemprop="url" rel="index">
+                    <span itemprop="name">操作系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+              <div class="post-description">
+                  虚拟内存和物理内存的映射
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="虚拟内存和物理内存">虚拟内存和物理内存</h2>
+<p>每个进程都有自己的虚拟内存和页表；页表提供了虚拟内存到物理内存的映射关系；每个进程根据自己的页表通过mmu映射到物理内存。</p>
+<figure>
+<img src="/images/虚拟内存/mmu.png" alt><figcaption>mmu</figcaption>
+</figure>
+<center>
+虚拟内存到物理内存的映射
+</center>
+<ul>
+<li><p>虚拟内存通过MMU可能映射到ELF文件或者物理内存</p></li>
+<li><p>如果映射到物理内存，就返回物理内存中的数据</p></li>
+<li><p>如果映射到磁盘上的ELF文件，就会发生缺页中断，然后把磁盘的数据加载到物理内存之后，完成映射关系</p></li>
+</ul>
+<h2 id="页表和页表项">页表和页表项</h2>
+<ul>
+<li><p>页(page)：虚拟内存和物理内存都是按页来划分的，每一页表示4K的内存大小。</p></li>
+<li><p>页表(page table)：内存中的数据结构，记录了虚拟内存到物理内存的映射关系，每一个页表的大小是<span class="math inline">\(4K\)</span></p></li>
+<li><p>页表项(page table entry)：页表中的基本元素，具体记录了虚拟内存到物理内存的关系，每个页表项的大小是<span class="math inline">\(4B\)</span></p></li>
+<li><p>一个页表中包含了<span class="math inline">\(4K/4B=1K\)</span>，也就是<span class="math inline">\(1K\)</span>个页表项。</p></li>
+</ul>
+<figure>
+<img src="/images/虚拟内存/wz.png" alt><figcaption>wz</figcaption>
+</figure>
+<center>
+页表，页表项和页直接之间的关系
+</center>
+<p><strong>虚拟地址</strong>通过<strong>MMU</strong>找到了<strong>PTE2</strong>，然后发现该PTE2的有效位是0，表示虚拟页没有缓存到物理内存中。这个时候cpu会触发缺页异常，然后把磁盘上的page，移动到物理内存中，并更新<strong>PTE2</strong>。</p>
+<h3 id="一级页表">一级页表：</h3>
+<p>对于32位的机器来说，寻址的范围是 0~ <span class="math inline">\(2^{32}\)</span>，所以内存的大小就是<span class="math inline">\(2^{32}=4G\)</span></p>
+<ul>
+<li><p>每一个页的大小是<span class="math inline">\(4K\)</span>，所以需要<span class="math inline">\(4G/4K=1M\)</span>个<strong>页表项</strong>。</p></li>
+<li><p>一个页表包含了<span class="math inline">\(1K\)</span>个页表项，那么<span class="math inline">\(1M\)</span>个页表项，就需要<span class="math inline">\(1M/1K=1K\)</span>个<strong>页表</strong></p></li>
+<li><p>一个页表占用<span class="math inline">\(4K\)</span>的内存，所以<span class="math inline">\(1K\)</span>个页表占用的大小就是<span class="math inline">\(4M\)</span>。</p></li>
+</ul>
+<p><strong>通过一级页表把虚拟地址转换成物理地址</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200629172108753.png" alt><figcaption>image-20200629172108753</figcaption>
+</figure>
+<ul>
+<li><p>从寄存器得到页表在内存中的位置</p></li>
+<li><p>根据页表在内存中的位置和虚拟页号，找到页表中的页表项的位置。</p></li>
+<li><p>根据页表项中有效位来判断，物理页是在磁盘中还是内存中</p></li>
+<li><p>如果是磁盘中，就出发缺页中断，然后数据从磁盘加载到内存，然后再次寻址，并且命中。</p>
+<p>如果是内存中，根据物理页在内存中的位置和页的偏移得到真正的物理地址。</p></li>
+</ul>
+<h3 id="多级页表">多级页表：</h3>
+<p>显然对于单级页表，一个进程，占用了4M的空间做虚拟内存，是不能接受的；所以我们这里引入了多级页表来解决这个问题；为了节省空间，我们可以把页表到页的映射关系分成多级。第一级的页表的页表项，指向的是二级页表；第二级的页表项在指向下一级的页表，直到最后一级的页表，它的页表项最终映射到物理页。</p>
+<p>对于32位的机器来说，内存大小是<span class="math inline">\(4G\)</span>，假设我们是二级页表</p>
+<ul>
+<li><p>第一级也表有<span class="math inline">\(1K\)</span>个页表项，每一个页表项，对应一个二级的页表。</p></li>
+<li><p>二级页表也有<span class="math inline">\(1K\)</span>个页表项，那么总共就是<span class="math inline">\(1K*1K=1M\)</span>个页表项。</p></li>
+<li><p>如果一个一级页表的一个PTE是空的，那么相应的二级页表也不会存在。这代表一种巨大的潜在节约（对于一个普通的程序来说，虚拟地址空间的大部分都会是未分配的）。</p></li>
+<li><p>只有一级页表才总是需要缓存在内存中的，这样虚拟内存系统就可以在需要时创建、页面调入或调出二级页表（只有经常使用的二级页表才会被缓存在内存中），这就减少了内存的压力。</p></li>
+</ul>
+<p><strong>通过多级页表把虚拟地址映射到物理地址</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200629173338935.png" alt><figcaption>image-20200629173338935</figcaption>
+</figure>
+<p>从页表基寄存器中得到第一级页表的地址</p>
+<p>根据第一级页表在内存中的位置和一级虚拟页号，找到页表中的页表项的位置，等到二级页表的基地址</p>
+<p>根据二级页表的基地址和二级虚拟页号，得到下一级页表的基地址</p>
+<p>直到得到第K级页表的基地址，通过K级页表的基地址和K级虚拟页号得到最终的物理页号，然后根据页内偏移得到物理地址。</p>
+<h2 id="地址翻译">地址翻译</h2>
+<p><strong>CPU通过MMU把虚拟地址翻译成物理地址。</strong></p>
+<p>第一次访问内存：</p>
+<p>MMU通过页表的基地址和虚拟页号，得到页表项的地址，并根据页表项的地址得到页表项的内容</p>
+<p>第二次访问内存：</p>
+<p>通过页表项中的物理页号和虚拟内存中的页偏移得到了数据的物理地址，并根据地址访问数据</p>
+<p><strong>通过TLB，提高翻译效率</strong></p>
+<p>我们可以看翻译的过程中访问了两次内存，效率比较低。我们通过在MMU中加入TLB模块，来缓存虚拟内存到页表项的映射，这样可以减少第一次访问内存的次数。应为TLB模块是CPU的缓存模块，所以效率要比缓存在物理内存中要高。</p>
+<h3 id="没有tlb的翻译过程">没有TLB的翻译过程</h3>
+<p><strong>1 页命中的流程</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200630100256878.png" alt><figcaption>image-20200630100256878</figcaption>
+</figure>
+<ul>
+<li>通过CPU把虚拟地址传送给MMU</li>
+<li>MMU根据页表的基地址和虚拟页号，得到页表项的地址；并得到页表项的数据</li>
+<li>MMU通过页表项中的物理页号和虚拟地址中的页偏移，得到物理地址</li>
+<li>根据得到的物理地址取出数据，返回给CPU处理</li>
+</ul>
+<p><strong>2 页没有命中的流程(缺页中断)</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200630102341383.png" alt><figcaption>image-20200630102341383</figcaption>
+</figure>
+<ul>
+<li>通过CPU把虚拟地址传送给MMU</li>
+<li>MMU根据页表的基地址和虚拟页号，得到页表项的地址；并根据页表项的数据</li>
+<li>MMU通过页表项中的有效位是0，表示数据在磁盘上；MMU触发缺页异常，交给内核的缺页异常处理程序</li>
+<li>缺页处理程序从物理内存中找到一个可牺牲页(如果该页有数据，就把这页的数据落盘)</li>
+<li>缺页处理程序然后把磁盘上的数据加载到内存，然后更新<strong>页表</strong>中的<strong>页表项</strong></li>
+<li>缺页处理程序返回原来的进程，进程再一次执行导致缺页的命令，这个时候就是就会命中。</li>
+</ul>
+<h3 id="有tlb的翻译过程">有TLB的翻译过程</h3>
+<p><strong>1 TLB命中</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200630104537579.png" alt><figcaption>image-20200630104537579</figcaption>
+</figure>
+<ul>
+<li>通过CPU把虚拟地址传送给MMU</li>
+<li>通过虚拟地址的虚拟页号从TLB中得到页表项(不用访问内存)，并返回给MMU</li>
+<li>MMU通过页表项中的物理页号和虚拟地址中的页偏移，得到物理地址</li>
+<li>根据得到的物理地址取出数据，返回给CPU处理</li>
+</ul>
+<p><strong>2 TLB缺页</strong></p>
+<figure>
+<img src="/images/虚拟内存/image-20200630105547741.png" alt><figcaption>image-20200630105547741</figcaption>
+</figure>
+<ul>
+<li>通过CPU把虚拟地址传送给MMU</li>
+<li>通过虚拟地址的虚拟页号访问TLB，没有命中</li>
+<li>MMU根据页表的基地址和虚拟页号，得到页表项的地址，并得到页表项的数据</li>
+<li>MMU把页表项的数据缓存到TLB中</li>
+<li>MMU通过页表项中的物理页号和虚拟地址中的页偏移，得到物理地址</li>
+<li>根据得到的物理地址取出数据，返回给CPU处理</li>
+</ul>
+<h2 id="相关的问题">相关的问题</h2>
+<ul>
+<li>linux的缺页中断分成majflt和minflt，他们表示什么意思呢</li>
+</ul>
+<p>majflt表示页没有命中，即虚拟内存映射到了磁盘，需要把磁盘的数据加载到内存</p>
+<p>minflt表示TBL没有命中，即页表项没有缓存到TBL中，需要找到页表项的地址，把页表项的内容缓存到TBL中</p>
+<ul>
+<li>malloc函数做了什么事情</li>
+</ul>
+<p>malloc函数只是建立虚拟内存到物理内存之间的映射关系，并没有真的给用户内存；直到用户使用这一块内存的时候，才会发生缺页中断，给他分配物理内存</p>
+<h2 id="参考资料">参考资料</h2>
+<p><a href="https://sylvanassun.github.io/2017/10/29/2017-10-29-virtual_memory/" target="_blank" rel="noopener">内存那点事</a></p>
+<p><a href="https://www.jianshu.com/p/13e337312651" target="_blank" rel="noopener">深入了解内存机制</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1624718" target="_blank" rel="noopener">Linux可执行文件与进程虚拟内存地址空间</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/148426554" target="_blank" rel="noopener">Linux可执行文件如何装载进虚拟内存</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/内存/" rel="tag"># 内存</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/23/mid/" rel="next" title="两个有序数组中位数的问题">
+                <i class="fa fa-chevron-left"></i> 两个有序数组中位数的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟内存和物理内存"><span class="nav-number">1.</span> <span class="nav-text">虚拟内存和物理内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#页表和页表项"><span class="nav-number">2.</span> <span class="nav-text">页表和页表项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一级页表"><span class="nav-number">2.1.</span> <span class="nav-text">一级页表：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多级页表"><span class="nav-number">2.2.</span> <span class="nav-text">多级页表：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#地址翻译"><span class="nav-number">3.</span> <span class="nav-text">地址翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#没有tlb的翻译过程"><span class="nav-number">3.1.</span> <span class="nav-text">没有TLB的翻译过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有tlb的翻译过程"><span class="nav-number">3.2.</span> <span class="nav-text">有TLB的翻译过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关的问题"><span class="nav-number">4.</span> <span class="nav-text">相关的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion" lang="en">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
@@ -125,7 +125,7 @@
 
 
 
-  <title>静态库和动态库 | wz's blog</title>
+  <title>静态库和动态库 | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -144,7 +144,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -336,49 +336,43 @@
       
         <p>静态库和动态库的相关概念和使用</p>
 <a id="more"></a>
-
-
-
-<h1 id="静态库和动态库"><a href="#静态库和动态库" class="headerlink" title="静态库和动态库"></a>静态库和动态库</h1><h2 id="静态库"><a href="#静态库" class="headerlink" title="静态库"></a>静态库</h2><p>静态库的后缀(.a .lib)</p>
+<h1 id="静态库和动态库">静态库和动态库</h1>
+<h2 id="静态库">静态库</h2>
+<p>静态库的后缀(.a .lib)</p>
 <p>静态库在程序编译时会被连接到目标代码中，程序运行时将不再需要该静态库。</p>
-<h2 id="动态库"><a href="#动态库" class="headerlink" title="动态库"></a>动态库</h2><p>动态库的后缀是(.so, .dll)</p>
+<h2 id="动态库">动态库</h2>
+<p>动态库的后缀是(.so, .dll)</p>
 <p>动态库在程序编译时并不会被连接到目标代码中，而是在程序运行是才被载入，因此在程序运行时还需要动态库存在。</p>
-<h2 id="静态库和动态库的区别"><a href="#静态库和动态库的区别" class="headerlink" title="静态库和动态库的区别"></a>静态库和动态库的区别</h2><ul>
+<h2 id="静态库和动态库的区别">静态库和动态库的区别</h2>
+<ul>
 <li>静态库，每个程序编译的时候，会把静态库编译进去，相当于每个程序私有一份静态库，占用多分内存。</li>
 <li>动态库，每个程序编译的时候，不会把动态库连接进去，而是在程序运行的时候才会被载入，相当于多个程序公用一份动态库，占用一份内存。</li>
 </ul>
-<h1 id="静态库和动态库的创建"><a href="#静态库和动态库的创建" class="headerlink" title="静态库和动态库的创建"></a>静态库和动态库的创建</h1><h2 id="静态库的创建"><a href="#静态库的创建" class="headerlink" title="静态库的创建"></a>静态库的创建</h2><ul>
+<h1 id="静态库和动态库的创建">静态库和动态库的创建</h1>
+<h2 id="静态库的创建">静态库的创建</h2>
+<ul>
 <li>静态库源文件</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// static_library_test.c  </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">static_library_test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"static_library_test 111111 \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li><p>静态库的命名规则: lib{name}.a </p>
-</li>
-<li><p>静态库的创建： </p>
-</li>
+<li><p>静态库的命名规则: lib{name}.a</p></li>
+<li><p>静态库的创建：</p></li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">编译目标文件</span></span><br><span class="line">gcc -c static_library_test.c </span><br><span class="line"><span class="meta">#</span><span class="bash">创建静态库</span></span><br><span class="line">ar -crv libstatic_library_test.a static_library_test.o</span><br></pre></td></tr></table></figure>
-
-<h2 id="动态库的创建"><a href="#动态库的创建" class="headerlink" title="动态库的创建"></a>动态库的创建</h2><ul>
+<h2 id="动态库的创建">动态库的创建</h2>
+<ul>
 <li>动态库源文件</li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// dynamic_library_test.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dynamic_library_test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"dynamic_library_test 222222 \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <ul>
-<li><p>动态库的命名规则: lib{name}.so </p>
-</li>
-<li><p>动态库的创建</p>
-</li>
+<li><p>动态库的命名规则: lib{name}.so</p></li>
+<li><p>动态库的创建</p></li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> method 1</span></span><br><span class="line">gcc -fPIC -c dynamic_library_test.c</span><br><span class="line">gcc -shared -o libdynamic_library_test.so dynamic_library_test.o</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> method 2</span></span><br><span class="line">gcc -fPIC -shared -o libdynamic_library_test.so dynamic_library_test.c</span><br></pre></td></tr></table></figure>
-
-<h1 id="静态库和动态库的引用"><a href="#静态库和动态库的引用" class="headerlink" title="静态库和动态库的引用"></a>静态库和动态库的引用</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    static_library_test();</span><br><span class="line">    dynamic_library_test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h1 id="静态库和动态库的引用">静态库和动态库的引用</h1>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    static_library_test();</span><br><span class="line">    dynamic_library_test();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">gcc main.c -L ./ -l static_library_test -l dynamic_library_test</span><br><span class="line"><span class="meta">#</span><span class="bash"> -L 表示要连接的库所在目录</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -l 指定链接时需要的动态库，编译器查找动态连接库时有隐含的命名规则，即在给出的名字前面加上lib，后面加上.a或.so来确定库的名称。</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 默认会在<span class="built_in">test</span>前面加上lib在结尾加上.a或者.so，所以库文件就是(libtest.a 或者 libtest.so)</span></span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 注意：编译动态库可能会报找不到文件的错误</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决方式</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1 编辑/etc/ld.so.conf文件，加入库文件所在目录的路径</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2 运行ldconfig ，该命令会重建/etc/ld.so.cache文件</span></span><br></pre></td></tr></table></figure>
-
 
       
     </div>
@@ -492,7 +486,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -503,7 +497,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -514,7 +508,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -721,7 +715,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -774,6 +768,8 @@
   
 
   
+  
+
 
   
 

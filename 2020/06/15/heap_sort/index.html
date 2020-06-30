@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion" lang="en">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
@@ -137,7 +137,7 @@
 
 
 
-  <title>堆排序问题 | wz's blog</title>
+  <title>堆排序问题 | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -156,7 +156,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -370,21 +370,28 @@
       
         <p>堆排序</p>
 <a id="more"></a>
-
-<h1 id="大顶堆的概念："><a href="#大顶堆的概念：" class="headerlink" title="大顶堆的概念："></a>大顶堆的概念：</h1><p>父节点要大于左右孩子节点</p>
-<h1 id="小顶堆的概念："><a href="#小顶堆的概念：" class="headerlink" title="小顶堆的概念："></a>小顶堆的概念：</h1><p>父节点要小于左右孩子节点</p>
-<h1 id="从小到大排序："><a href="#从小到大排序：" class="headerlink" title="从小到大排序："></a>从小到大排序：</h1><p>(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组)</p>
-<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<h1 id="大顶堆的概念">大顶堆的概念：</h1>
+<p>父节点要大于左右孩子节点</p>
+<h1 id="小顶堆的概念">小顶堆的概念：</h1>
+<p>父节点要小于左右孩子节点</p>
+<h1 id="从小到大排序">从小到大排序：</h1>
+<p>(1)构建大顶堆。(把无序的数组，按照大顶堆进行排序，此时的并不是有序数组，而是满足大顶堆的数组)</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
 <p>交换完成后，最后一个元素a[n]就是该数组中最大的元素，a[0]~a[n-1]此时不满足大顶堆。</p>
 <p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足大顶堆</p>
-<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
+<ol start="3" type="1">
+<li>重复(2)步骤，直到a[1]和a[0]交换。</li>
+</ol>
 <p>#从大到小排序</p>
 <p>(1)构建小顶堆。(把无序的数组，按照小顶堆进行排序，此时的并不是有序数组，而是满足小顶堆的数组)</p>
-<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
+<p>(2) 把数组的中第一个元素和最后一个元素a[n]进行交换</p>
 <p>交换完成后，最后一个元素a[n]就是该数组中最小的元素，a[0]~a[n-1]此时不满足小顶堆。</p>
 <p>此时需要重新把数组a[0]~a[n-1]重新调整，使它满足小顶堆</p>
-<p>(3) 重复(2)步骤，直到a[1]和a[0]交换。</p>
-<h2 id="二叉树的性质："><a href="#二叉树的性质：" class="headerlink" title="二叉树的性质："></a>二叉树的性质：</h2><p>对于二叉树，根节点是1</p>
+<ol start="3" type="1">
+<li>重复(2)步骤，直到a[1]和a[0]交换。</li>
+</ol>
+<h2 id="二叉树的性质">二叉树的性质：</h2>
+<p>对于二叉树，根节点是1</p>
 <p>父节点是n，左孩在是2n，右孩子是2n+1</p>
 <p>孩子节点是n，父节点是n/2</p>
 <p>比如子节点是2(左孩子)，父节点是1</p>
@@ -400,33 +407,53 @@
 <p>(3)然后调整数组a[0]-a[n-2]，使它们满足大顶堆。</p>
 <p>(4)把数组a[0]和a[n-2]进行交换；保证最大的数，在数组a[0]-a[n-2]的最后一位</p>
 <p>(5)一直重复(3)，(4)的步骤，直到调整数组调整数组a[0]-a[1]，使它们满足大顶堆。</p>
-<p><img src="/images/heap_sort/image-20191026225622667.png" alt="image-20191026225622667"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026225622667.png" alt><figcaption>image-20191026225622667</figcaption>
+</figure>
 <p>一： 把原始数组转换成大顶堆</p>
 <p>把无序数组转换成如下二叉树，我们可以看到有4颗子树。我们从下往上，一步步的构造大顶堆。</p>
-<p><img src="/images/heap_sort/image-20191026225914046.png" alt="image-20191026225914046"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026225914046.png" alt><figcaption>image-20191026225914046</figcaption>
+</figure>
 <p>步骤一：把子树(1)构造成大顶堆，12和10交换。</p>
-<p><img src="/images/heap_sort/image-20191026230852631.png" alt="image-20191026230852631"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026230852631.png" alt><figcaption>image-20191026230852631</figcaption>
+</figure>
 <p>步骤二：对子树(2)构造大顶堆，发现子树(2)已经满足大顶堆，不需要交换</p>
-<p><img src="/images/heap_sort/image-20191026231040389.png" alt="image-20191026231040389"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026231040389.png" alt><figcaption>image-20191026231040389</figcaption>
+</figure>
 <p>步骤三：对子树(3)构造大顶堆，7和12交换，然后7和10交换。</p>
 <p>注意：需要每一颗子树分别满足大顶堆，不需要左右2颗子树有关联关系。</p>
 <p>例如：左子树(3)满足大顶堆，右子树(2)满足大顶堆；但是左子树(3)和右子树(2)没有什么关系。</p>
 <p>不需要左子树(3)的每个节点都大于右子树(2)；或者左子树(3)的每个节点都小于右子树(2)。</p>
-<p><img src="/images/heap_sort/image-20191026231151967.png" alt="image-20191026231151967"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026231151967.png" alt><figcaption>image-20191026231151967</figcaption>
+</figure>
 <p>步骤三：对子树(4)构造大顶堆，4和15交换，4和13交换。</p>
-<p><img src="/images/heap_sort/image-20191026231738573.png" alt="image-20191026231738573"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026231738573.png" alt><figcaption>image-20191026231738573</figcaption>
+</figure>
 <p>调整完成之后的数组</p>
-<p><img src="/images/heap_sort/image-20191026232701443.png" alt="image-20191026232701443"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026232701443.png" alt><figcaption>image-20191026232701443</figcaption>
+</figure>
 <p>二：把a[0]和a[n-1]进行交换，数组最后一位是是最大的</p>
 <p>数组如下</p>
-<p><img src="/images/heap_sort/image-20191026232820725.png" alt="image-20191026232820725"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026232820725.png" alt><figcaption>image-20191026232820725</figcaption>
+</figure>
 <p>二叉树如下：</p>
-<p><img src="/images/heap_sort/image-20191026233307699.png" alt="image-20191026233307699"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026233307699.png" alt><figcaption>image-20191026233307699</figcaption>
+</figure>
 <p>步骤三：调整树(3)，构建数组a[0]~a[n-2]的大顶推</p>
 <p>因为在步骤一构建大顶堆的时候，子树(2)和子树(1)已经满足了大顶堆。</p>
 <p>所以我们只需要调整树(3)，就可以使数组a[0]~a[n-2]的大顶推。</p>
 <p>交换7和13</p>
-<p><img src="/images/heap_sort/image-20191026233650426.png" alt="image-20191026233650426"></p>
+<figure>
+<img src="/images/heap_sort/image-20191026233650426.png" alt><figcaption>image-20191026233650426</figcaption>
+</figure>
 
       
     </div>
@@ -546,7 +573,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -557,7 +584,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -568,7 +595,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -601,7 +628,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大顶堆的概念："><span class="nav-number">1.</span> <span class="nav-text">大顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小顶堆的概念："><span class="nav-number">2.</span> <span class="nav-text">小顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从小到大排序："><span class="nav-number">3.</span> <span class="nav-text">从小到大排序：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的性质："><span class="nav-number">3.1.</span> <span class="nav-text">二叉树的性质：</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大顶堆的概念"><span class="nav-number">1.</span> <span class="nav-text">大顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小顶堆的概念"><span class="nav-number">2.</span> <span class="nav-text">小顶堆的概念：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从小到大排序"><span class="nav-number">3.</span> <span class="nav-text">从小到大排序：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二叉树的性质"><span class="nav-number">3.1.</span> <span class="nav-text">二叉树的性质：</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -775,7 +802,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -828,6 +855,8 @@
   
 
   
+  
+
 
   
 

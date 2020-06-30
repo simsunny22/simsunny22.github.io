@@ -7,7 +7,7 @@
 
 <html class="theme-next pisces use-motion" lang="en">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#222">
@@ -126,7 +126,7 @@
 
 
 
-  <title>两数之和最接近 | wz's blog</title>
+  <title>两数之和最接近 | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 
 
@@ -145,7 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -359,17 +359,18 @@
       
         <p>一个无序的数组，指定一个数。在这个无序数组中，找到两数之和等于或者最接近这个给定的数。</p>
 <a id="more"></a>
-
-<h1 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h1><p>遍历数组，记录数组中两数之和，和给定的数比较，得到最接近的两数之和。</p>
+<h1 id="方法一">方法一：</h1>
+<p>遍历数组，记录数组中两数之和，和给定的数比较，得到最接近的两数之和。</p>
 <p>时间复杂度是O(n2)</p>
-<h1 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h1><p>对数组先进行排序；记录左右两个指针，分别指向数组的两边；</p>
-<p>如果两数之和大于给定的数，则右指针–；如果两数之和小于给定的数，则左指针++；</p>
+<h1 id="方法二">方法二：</h1>
+<p>对数组先进行排序；记录左右两个指针，分别指向数组的两边；</p>
+<p>如果两数之和大于给定的数，则右指针--；如果两数之和小于给定的数，则左指针++；</p>
 <p>记录每次两数之和与给定数差的绝对值。如果发现这次的绝对值比上次的绝对值小，则替换。</p>
 <p>当左右两指针相遇，或者两数之和等于给定数的时候，则返回。</p>
 <p>时间复杂度：排序的复杂度(nlogn)</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Result <span class="title">find_close_num</span><span class="params">(<span class="keyword">int</span> *a, <span class="keyword">int</span> len, <span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//sort array</span></span><br><span class="line">        print_list(a, len);</span><br><span class="line">        <span class="built_in">std</span>::sort(a, a+<span class="number">11</span>);</span><br><span class="line">        print_list(a, len);</span><br><span class="line"></span><br><span class="line">        <span class="function">Result <span class="title">result</span><span class="params">(<span class="number">0</span>,<span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>, j = len<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">int</span> current_abs = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> min = a[i], max = a[j];</span><br><span class="line">        <span class="keyword">int</span> last_abs = <span class="built_in">abs</span>(<span class="number">2</span>*max-num) &gt; <span class="built_in">abs</span>(<span class="number">2</span>*min-num) ? <span class="number">2</span>*max : <span class="number">2</span>*min;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(i &lt; j) &#123;</span><br><span class="line">                <span class="keyword">int</span> _i = i, _j = j;</span><br><span class="line">                <span class="keyword">int</span> _sum = a[i] + a[j];</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (_sum &gt; num) &#123;</span><br><span class="line">                        j--;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (_sum &lt; num) &#123;</span><br><span class="line">                        i++;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        result.<span class="built_in">set</span>(a[_i], a[_j]);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                current_abs = <span class="built_in">abs</span>(_sum - num);</span><br><span class="line">                <span class="comment">//if current_abs &lt; last_abs, means more close, so record result</span></span><br><span class="line">                <span class="keyword">if</span> (current_abs &lt; last_abs) &#123;</span><br><span class="line">                        last_abs = current_abs;</span><br><span class="line">                        result.<span class="built_in">set</span>(a[_i], a[_j]);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h1><p><a href="https://github.com/simsunny22/leetcode/blob/master/find_closed_sum.cpp" target="_blank" rel="noopener">https://github.com/simsunny22/leetcode/blob/master/find_closed_sum.cpp</a></p>
+<h1 id="源码">源码</h1>
+<p>https://github.com/simsunny22/leetcode/blob/master/find_closed_sum.cpp</p>
 
       
     </div>
@@ -489,7 +490,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -500,7 +501,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -511,7 +512,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -544,7 +545,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一："><span class="nav-number">1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二："><span class="nav-number">2.</span> <span class="nav-text">方法二：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">3.</span> <span class="nav-text">源码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一"><span class="nav-number">1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二"><span class="nav-number">2.</span> <span class="nav-text">方法二：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">3.</span> <span class="nav-text">源码</span></a></li></ol></div>
             
 
           </div>
@@ -718,7 +719,7 @@
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 
 
@@ -771,6 +772,8 @@
   
 
   
+  
+
 
   
 
