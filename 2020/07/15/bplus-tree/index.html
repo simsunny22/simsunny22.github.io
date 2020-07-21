@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="data_structure,mysql,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="b+树的介绍，使用场景和实现">
+<meta name="keywords" content="data_structure,mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="bplus_tree">
+<meta property="og:url" content="http://yoursite.com/2020/07/15/bplus-tree/index.html">
+<meta property="og:site_name" content="wz&#39;s blog">
+<meta property="og:description" content="b+树的介绍，使用场景和实现">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/btree.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/bplus_tree.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert1.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert2.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert3.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert4.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert5.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert6.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/insert.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete1.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete2.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete3.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete4.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete5.png">
+<meta property="og:image" content="http://yoursite.com/images/bplus-tree/delete.png">
+<meta property="og:updated_time" content="2020-07-21T07:42:53.789Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="bplus_tree">
+<meta name="twitter:description" content="b+树的介绍，使用场景和实现">
+<meta name="twitter:image" content="http://yoursite.com/images/bplus-tree/btree.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/15/bplus-tree/">
+
+
+
+
+
+  <title>bplus_tree | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wz's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">good good study, day day up</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/15/bplus-tree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wz">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wz's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">bplus_tree</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-07-15T11:47:37+08:00">
+                2020-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/data-structure/" itemprop="url" rel="index">
+                    <span itemprop="name">data structure</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+              <div class="post-description">
+                  b+树的介绍，使用场景和实现
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="B树和B-树"><a href="#B树和B-树" class="headerlink" title="B树和B+树"></a>B树和B+树</h1><p><strong>B树的示意图：</strong></p>
+<p><img src="/images/bplus-tree/btree.png" alt></p>
+<p><strong>B+树的示意图：</strong></p>
+<p><img src="/images/bplus-tree/bplus_tree.png" alt></p>
+<h2 id="B树和B-树的相同点："><a href="#B树和B-树的相同点：" class="headerlink" title="B树和B+树的相同点："></a>B树和B+树的相同点：</h2><p>(1)B树和B+树都是多路平衡树，每一个节点含有多个元素</p>
+<p>(2)B树和B+树更加适合磁盘的存储结构，因为B树和B+树每个节点有多个元素。从而可以降低树的高度，减少磁盘的访问次数。</p>
+<h2 id="B树和B-树的不同点："><a href="#B树和B-树的不同点：" class="headerlink" title="B树和B+树的不同点："></a>B树和B+树的不同点：</h2><p>(1)B树每个节点的元素都会记录索引(key)和数据(data)。</p>
+<p>(2)B+树的非叶子节点(所以节点)的元素不记录数据(data)，只有叶子节点的元素记录数据(data)。</p>
+<p>(3)B+树的叶子节点之间采用链表结构，用指针连接起来，方便范围查找。</p>
+<h2 id="B-树相对于B树更加适合做数据库的索引"><a href="#B-树相对于B树更加适合做数据库的索引" class="headerlink" title="B+树相对于B树更加适合做数据库的索引"></a>B+树相对于B树更加适合做数据库的索引</h2><ul>
+<li><strong>B+树读写磁盘的代价更低</strong></li>
+</ul>
+<p>B树的每个节点的元素都会记录索引(key)和数据(data)，而B+树的只有叶子节点的元素记录数据(data)；</p>
+<p>那么在磁盘块大小相同的情况下，B+树的每个节点可以存放更多的元素；</p>
+<p>一个节点包含的元素越多，那么树的整体高度就约低，从而IO次数也就越少。</p>
+<ul>
+<li><strong>B+树的查找更加的稳定</strong></li>
+</ul>
+<p>B+树的只有叶子节点的元素记录数据(data)，并且B+树是平衡树，所有的叶子节点的高度也是相同的；</p>
+<p>任何关键字的查找都会从根节点到叶子节点，所有关键字查询的路径长度相同，所以每一个数据的查询效率相当。</p>
+<ul>
+<li><strong>B+树更加适合做范围查找。</strong></li>
+</ul>
+<p>B+树所有的数据(data)都在叶子节点上，并且叶子节点通过指针串联起来，方便对数据进行遍历和范围查找。</p>
+<h2 id="mysql中的B-树可以存放多少索引："><a href="#mysql中的B-树可以存放多少索引：" class="headerlink" title="mysql中的B+树可以存放多少索引："></a>mysql中的B+树可以存放多少索引：</h2><ul>
+<li><p>mysql中的页大小是16K</p>
+</li>
+<li><p>对于一个索引节点，一个元素(关键字+指针)占用大概14字节，那么一页可以包含16k/14=1170个元素</p>
+<p><em>一个元素包含关键字和指针，关键字为bigint类型占用8字节，指针占用6字节，加起来就是14字节</em></p>
+</li>
+<li><p>对于一个叶子节点，一个元素(关键字+数据)占用大概1k字节，那么一页可以包含16k/1k=16个元素</p>
+</li>
+<li><p>假设mysql中，索引B+树的高度是2</p>
+<p>第一层是1个索引节点，第二层是1170个叶子节点，所以总共是有1170<em>16=18,720条记录<em>*(万级别)</em></em></p>
+</li>
+<li><p>mysql中，高度是3的B+树</p>
+<p>第一层呢是1个索引节点，第二层是1170个索引节点，第三层是1170 <em> 1170=1,368,900个叶子节点<strong>(百万级别的叶子节点)</strong>所以总共是1,368,900 </em> 16=21,902,400条记录<strong>(千万级别的数据量)</strong></p>
+</li>
+</ul>
+<h1 id="B-树的插入："><a href="#B-树的插入：" class="headerlink" title="B+树的插入："></a>B+树的插入：</h1><p>首先我们假设，B+树每个节点的最大元素个数是3；</p>
+<p>当给一个节点插入一个元素后，元素的个数超过了最大值(3)的时候，我们就要对该节点进行拆分。</p>
+<h2 id="B-树的插入过程："><a href="#B-树的插入过程：" class="headerlink" title="B+树的插入过程："></a>B+树的插入过程：</h2><p>(1) 插入元素的索引分别是(1，2，3)</p>
+<p><img src="/images/bplus-tree/insert1.png" alt></p>
+<ul>
+<li>插入元素的索引分别是(1，2，3)；</li>
+<li>插入后的节点元素没有大于3，所以插入完成。</li>
+</ul>
+<p>(2) 插入元素的索引是4</p>
+<p><img src="/images/bplus-tree/insert2.png" alt></p>
+<ul>
+<li>插入索引是4的元素后，插入节点node的元素个数&gt;3，需要进行分裂 ;</li>
+<li>把插入节点node分裂成两个节点，node和split_node；</li>
+<li>因为插入节点node没有父节点，需要创建新的索引节点parent为node和split_node父节点；</li>
+<li>最后把node的最小索引(1)和split_node的最小索引(3)插入到新的父节点parent中。</li>
+</ul>
+<p>(3)插入元素的索引是5</p>
+<p><img src="/images/bplus-tree/insert3.png" alt></p>
+<ul>
+<li>插入索引是5的元素后，插入节点node的最大个数不大于3；插入完成。</li>
+</ul>
+<p>(4)插入元素的索引是6</p>
+<p><img src="/images/bplus-tree/insert4.png" alt></p>
+<ul>
+<li>插入索引是4的元素后，插入节点node的元素个数&gt;3，需要进行分裂 ;</li>
+<li>把插入节点node分裂成两个节点，node和split_node；</li>
+<li>因为插入节点node有父节点parent，所以可以直接把split_node的最小索引(5)直接插入父节点parent；</li>
+<li>把split_node的最小索引(5)插入到父节点parent后，父节点parent的元素个数不大于3；插入完成。</li>
+</ul>
+<p>(5)插入元素的索引是7</p>
+<p><img src="/images/bplus-tree/insert5.png" alt></p>
+<ul>
+<li>插入索引是7的元素后，插入节点node的最大个数不大于3；插入完成。</li>
+</ul>
+<p>(6)插入元素的索引是8</p>
+<p><img src="/images/bplus-tree/insert6.png" alt></p>
+<ul>
+<li>插入索引是8的元素后，插入节点node的元素个数&gt;3，需要进行分裂 ;</li>
+<li>把插入节点node分裂成两个节点，node和split_node；</li>
+<li>因为插入节点node有父节点parent，所以可以直接把split_node的最小索引(7)直接插入父节点parent；</li>
+<li>把split_node的最小索引(7)插入到父节点parent后，父节点parent的元素个数大于3，所以父节点parent需要进行分裂；</li>
+<li>把父节点parent分裂成两个节点，parent和split_parent；</li>
+<li>因为父节点parent没有祖先，需要创建新的索引节点ancetor为parent和split_parent的父节点；</li>
+<li>最后把parent的最小索引(1)和split_parent的最小索引(5)插入到新的父节点ancetor中。</li>
+</ul>
+<h2 id="B-树的插入流程："><a href="#B-树的插入流程：" class="headerlink" title="B+树的插入流程："></a>B+树的插入流程：</h2><p><img src="/images/bplus-tree/insert.png" alt></p>
+<ol>
+<li>通过索引key，找到叶子节点node。</li>
+<li>把key和value(或者只是key)插入到该节点node。</li>
+<li>判断该节点是不是已经满了；如果该节点没有满，则插入结束；如果该节点满了，就执行步骤(4)。</li>
+<li>把插入节点node拆分成2个节点node和split_node；然后判断被拆分的节点，有没有父节点；如果没有父节点，执行步骤(5)；如果有父节点，执行步骤(6)。</li>
+<li>被拆分的节点没有父节点，首先创建一个父节点；然后把拆分的两个节点node和split_node的的最小索引插入到父节点，然后插入结束。</li>
+<li>被拆分的节点有父节点，首先根据node找到父节点；然后跳到步骤(1)，把split_node的最小索引插入到父节点，开始新一轮的插入过程。</li>
+</ol>
+<h1 id="B-树的删除："><a href="#B-树的删除：" class="headerlink" title="B+树的删除："></a>B+树的删除：</h1><p>首先我们假设，B+树每个节点的最大元素个数是3；</p>
+<p>但删除一个节点node的元素后，node节点的元素的小于等于最大值的一半(3/2=1)的时候；</p>
+<p>如果该节点的兄弟节点sibling的元素个数大于最大值的一半(3/2=1)；就把sibling的元素给node；</p>
+<p>如果该节点的兄弟节点sibling的元素个数不大于最大值的一半(3/2=1)；就合并sibling和node。</p>
+<h2 id="B-树的删除过程"><a href="#B-树的删除过程" class="headerlink" title="B+树的删除过程"></a>B+树的删除过程</h2><p>(1)删除元素的索引是9</p>
+<p><img src="/images/bplus-tree/delete1.png" alt></p>
+<ul>
+<li>找到索引9所在的叶子节点node。</li>
+<li>删除节点node，索引是9的元素，发现该节点元素的数量大于一半(1)，删除结束。</li>
+</ul>
+<p>(2)删除元素的索引是8</p>
+<p><img src="/images/bplus-tree/delete2.png" alt></p>
+<ul>
+<li>找到索引8所在的叶子节点node。</li>
+<li>删除node，索引是8的元素，发现节点元素的数量不大于一半(1)，然后找到他的兄弟节点sibling</li>
+<li>兄弟节点sibling元素数量大于一半，就把sibling元素(6)转移给node节点，并修改父节点的索引(7-&gt;6)</li>
+</ul>
+<p>(3)删除元素的索引是7</p>
+<p><img src="/images/bplus-tree/delete3.png" alt></p>
+<ul>
+<li>找到索引7所在的叶子节点node。</li>
+<li>删除node，索引7是的元素，发现节点元素的数量不大于一半(1)，然后找到他的兄弟节点sibling</li>
+<li>兄弟节点sibling元素数量不大于一半(1)，合并sibling和node的元素，并删除他们父节点parent的索引(6)</li>
+<li>删除parent索引6的元素，发现parent的数量小于等于一半(1)，然后找到父亲节点的兄弟节点parent_sibling</li>
+<li>发现parent_sibling元素数量大于一半(1)，然后把parent_sibling元素(3)转移给node节点，并修改父节点的索引(5-&gt;3)</li>
+</ul>
+<p>(4) 删除元素的索引是6</p>
+<p><img src="/images/bplus-tree/delete4.png" alt></p>
+<ul>
+<li>找到索引6所在的叶子节点node。</li>
+<li>删除node，索引是6的元素，发现节点元素的数量不大于一半(1)，然后找到他的兄弟节点sibling</li>
+<li>兄弟节点sibling元素数量大于一半，就把sibling元素(4)转移给node节点，并修改父节点的索引(5-&gt;4)</li>
+</ul>
+<p>(5)删除元素的索引是5</p>
+<p><img src="/images/bplus-tree/delete5.png" alt></p>
+<ul>
+<li>找到索引5所在的叶子节点node。</li>
+<li>删除node，索引是5的元素，发现节点元素的数量不大于一半(1)，然后找到他的兄弟节点sibling</li>
+<li>兄弟节点sibling元素数量不大于一半(1)，合并sibling和node的元素，并删除他们父节点parent的索引(4)</li>
+<li>删除parent索引4的元素，发现parent的数量小于等于一半(1)，然后找到父亲节点的兄弟节点sibling_parent</li>
+<li>发现sibling_parent元素数量不大于一半(1)，合并parent和parent_sibling的元素，并删除他们的父节点ancetor的索引(3)</li>
+</ul>
+<h2 id="B-树的删除流程："><a href="#B-树的删除流程：" class="headerlink" title="B+树的删除流程："></a>B+树的删除流程：</h2><p><img src="/images/bplus-tree/delete.png" alt></p>
+<ol>
+<li>通过索引key，找到叶子节点node。</li>
+<li>根据key删除该节点node的元素</li>
+<li>判断删除后node元素数量，是否大于一半；如果大于一半，则删除结束；如果没有大于一半，则执行步骤(4)</li>
+<li>找到删除节点(node)的兄弟节点(sibling)</li>
+<li>判断兄弟节点(sibling)元素数量，是否大于一半；如果大于一半，则执行步骤(6)；如果不大于一半，则执行步骤(7)。</li>
+<li>如果兄弟节点(sibling)元素数量大于一半；首先sibling中的一个元素转给node，然后修改父节点(parent)的索引，删除结束。</li>
+<li>如果兄弟节点(sibling)元素数量不大于一半；首先合并node和sibling节点，然后找到他们的父节点(parent)，跳转到步骤(2)，删除父节点中被合并的索引，开始新一轮的删除流程。</li>
+</ol>
+<h1 id="B-树的代码"><a href="#B-树的代码" class="headerlink" title="B+树的代码"></a>B+树的代码</h1><h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//节点的定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">bplus_node_s</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>   keynum;		<span class="comment">//当前节点上有多少个元素</span></span><br><span class="line">    KEY   *keys;    </span><br><span class="line">    VALUE *data;    </span><br><span class="line">    bplus_node_pt *child;   </span><br><span class="line">    bplus_node_pt parent;</span><br><span class="line">    bplus_node_pt next; <span class="comment">// 兄弟节点，仅是叶子节点时有值</span></span><br><span class="line">&#125; <span class="keyword">bplus_node_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//树的定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">bplus_tree_s</span> &#123;</span></span><br><span class="line">    bplus_node_pt root;</span><br><span class="line">    <span class="keyword">int</span> max;  <span class="comment">//一个节点上最大容纳的元素个数(在插入式，大于max的时候需要进行拆分)</span></span><br><span class="line">    <span class="keyword">int</span> min;  <span class="comment">//一个节点上最小的的元素个数(在删除时，少于等于min的时候需要迁移或合并)</span></span><br><span class="line">&#125; <span class="keyword">bplus_tree_t</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h2><p>插入树</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//插入btree</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert_bplus_tree</span><span class="params">(bplus_tree_pt tree, KEY key, VALUE value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret, index;</span><br><span class="line"></span><br><span class="line">        bplus_node_pt node = tree-&gt;root;</span><br><span class="line">        <span class="comment">//查找到叶节点</span></span><br><span class="line">        <span class="keyword">while</span> (node-&gt;child != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                ret = binary_search(node-&gt;keys, key, <span class="number">0</span>, node-&gt;keynum - <span class="number">1</span>, &amp;index);</span><br><span class="line">                node = node-&gt;child[index];</span><br><span class="line">        &#125;</span><br><span class="line">        ret = binary_search(node-&gt;keys, key, <span class="number">0</span>, node-&gt;keynum - <span class="number">1</span>, &amp;index);</span><br><span class="line">        <span class="comment">//如果已经拥有关键字是KEY的叶子节点，就返回</span></span><br><span class="line">  			<span class="keyword">if</span> (ret == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"[%s][%d] The node is exist!\n"</span>, __FILE__, __LINE__);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">  			<span class="comment">//插入叶子节点</span></span><br><span class="line">        insert_bplus_node(tree, node, key, value, <span class="literal">NULL</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>插入节点</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">insert_bplus_node</span><span class="params">(bplus_tree_pt tree, bplus_node_pt node, KEY key, VALUE value, bplus_node_pt child)</span> </span>&#123;</span><br><span class="line">        do_insert_bplus_node(node, key, value, child);</span><br><span class="line">        <span class="comment">//插入后，如果节点的元素大于Max，就进行拆分节点</span></span><br><span class="line">        <span class="keyword">if</span>(node-&gt;keynum &gt; tree-&gt;max) &#123;</span><br><span class="line">                bplus_node_pt split_node = split_bplus_node(node, tree-&gt;max);</span><br><span class="line">                <span class="comment">//如果拆分的是索引节点，需要重新绑定下该节点孩子节点的父节点</span></span><br><span class="line">                <span class="keyword">if</span> (node-&gt;child != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                        rebind_parent(split_node);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (node-&gt;parent == <span class="literal">NULL</span>) &#123;</span><br><span class="line">                  			<span class="comment">//如果node没有父节点，就创建一个父节点，然后给父节点插入拆分的两个节点</span></span><br><span class="line">                        bplus_node_pt parent = create_index_node(tree-&gt;max);</span><br><span class="line">                        node-&gt;parent = parent;</span><br><span class="line">                        split_node-&gt;parent= parent;</span><br><span class="line">                        tree-&gt;root = parent;</span><br><span class="line">                        do_insert_bplus_node(parent, node-&gt;keys[<span class="number">0</span>], INVAILD_VALUE, node);</span><br><span class="line">                        do_insert_bplus_node(parent, split_node-&gt;keys[<span class="number">0</span>], INVAILD_VALUE, split_node);</span><br><span class="line">                        <span class="keyword">return</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                  			<span class="comment">//如果node有父节点，就把拆分的节点插入父节点，进行递归</span></span><br><span class="line">                        insert_bplus_node(tree, node-&gt;parent, split_node-&gt;keys[<span class="number">0</span>], INVAILD_VALUE, split_node);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h2><p>删除树</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">delete_bplus_tree</span><span class="params">(bplus_tree_pt tree, KEY key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ret, index;</span><br><span class="line"></span><br><span class="line">        bplus_node_pt node = tree-&gt;root;</span><br><span class="line">        <span class="comment">//查找到叶节点</span></span><br><span class="line">        <span class="keyword">while</span> (node-&gt;child != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                ret = binary_search(node-&gt;keys, key, <span class="number">0</span>, node-&gt;keynum - <span class="number">1</span>, &amp;index);</span><br><span class="line">                node = node-&gt;child[index];</span><br><span class="line">        &#125;</span><br><span class="line">        ret = binary_search(node-&gt;keys, key, <span class="number">0</span>, node-&gt;keynum - <span class="number">1</span>, &amp;index);</span><br><span class="line">  			<span class="comment">//如果没有关键字是KEY的叶子节点，就返回</span></span><br><span class="line">        <span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"[%s][%d] The node is not exist!\n"</span>, __FILE__, __LINE__);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">  			<span class="comment">//删除节点</span></span><br><span class="line">        delete_bplus_node(tree, node, key);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>删除节点</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">delete_bplus_node</span><span class="params">(bplus_tree_pt tree, bplus_node_pt node, KEY key)</span> </span>&#123;</span><br><span class="line">        do_delete_bplus_node(node, key);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (node-&gt;keynum &gt; tree-&gt;min) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">  			<span class="comment">//删除后，如果node的元素个数小于等于tree-&gt;min，就进行合并</span></span><br><span class="line">        bplus_node_pt parent = node-&gt;parent;</span><br><span class="line">        <span class="keyword">if</span>(parent == <span class="literal">NULL</span>) &#123;</span><br><span class="line">                <span class="comment">//means node is root, and not leaf node;</span></span><br><span class="line">                <span class="keyword">if</span> (node-&gt;child != <span class="literal">NULL</span> &amp;&amp; node-&gt;keynum &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">                        tree-&gt;root = node-&gt;child[<span class="number">0</span>];</span><br><span class="line">                        node-&gt;child[<span class="number">0</span>]-&gt;parent = <span class="literal">NULL</span>;</span><br><span class="line">                        release_node(node);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> node_index, sibling_index;</span><br><span class="line">        <span class="keyword">int</span> min_key = node-&gt;keys[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> ret = find_sibling(node, min_key, &amp;node_index, &amp;sibling_index);</span><br><span class="line">        <span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"[%s][%d] find sibling_index error!\n"</span>, __FILE__, __LINE__);</span><br><span class="line">        &#125;</span><br><span class="line">        bplus_node_pt sibling_node = parent-&gt;child[sibling_index];</span><br><span class="line">  			<span class="comment">//找到兄弟节点，首先判断兄弟节点是在node的左边还是右边</span></span><br><span class="line">  			<span class="comment">//然后看兄弟节点的元素个数是否大于tree-&gt;min，如果大于就迁移一个节点到node,如果小于就合并兄弟节点</span></span><br><span class="line">        <span class="comment">//in left</span></span><br><span class="line">        <span class="keyword">if</span> (sibling_index &lt; node_index) &#123;</span><br><span class="line">                <span class="keyword">if</span>(parent-&gt;child[sibling_index]-&gt;keynum &gt; tree-&gt;min) &#123;</span><br><span class="line">                        mv_left_node(sibling_node, node, node_index);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">int</span> del_key = node-&gt;keys[<span class="number">0</span>];</span><br><span class="line">                  			<span class="comment">//合并之后，需要重新绑定合并节点子节点的父节点，已经在merge函数实现</span></span><br><span class="line">                        merge_left_node(sibling_node, node);</span><br><span class="line">                  			<span class="comment">//合并之后，删除父节点中被合并的节点，进行递归</span></span><br><span class="line">                        delete_bplus_node(tree, parent, del_key);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//in right</span></span><br><span class="line">        <span class="keyword">if</span> (sibling_index &gt; node_index) &#123;</span><br><span class="line">                <span class="keyword">if</span> (parent-&gt;child[sibling_index]-&gt;keynum &gt; tree-&gt;min) &#123;</span><br><span class="line">                        mv_right_node(node, sibling_node, sibling_index);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">int</span> del_key = sibling_node-&gt;keys[<span class="number">0</span>];</span><br><span class="line">                  			<span class="comment">//合并之后，需要重新绑定合并节点子节点的父节点，已经在merge函数实现</span></span><br><span class="line">                        merge_right_node(node, sibling_node);</span><br><span class="line">                  			<span class="comment">//合并之后，删除父节点中被合并的节点，进行递归</span></span><br><span class="line">                        delete_bplus_node(tree, parent, del_key);</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p><a href="https://github.com/simsunny22/simunny22/tree/master/data_structure/btree_plus" target="_blank" rel="noopener">https://github.com/simsunny22/simunny22/tree/master/data_structure/btree_plus</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="http://mingnote.com/bplus-tree-algorithm-in-c.html" target="_blank" rel="noopener">B+树的C语言实现</a></p>
+<p><a href="https://www.cnblogs.com/nullzx/p/8729425.html" target="_blank" rel="noopener">B树和B+树的插入，删除图文详解</a></p>
+<p><a href="https://ivanzz1001.github.io/records/post/data-structure/2018/06/16/ds-bplustree" target="_blank" rel="noopener">B+树详解</a></p>
+<p><a href="https://juejin.im/post/5c3b22a1f265da61776c2bf2" target="_blank" rel="noopener">浅析MySQL InnoDB中的B+树索引</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/data-structure/" rel="tag"># data_structure</a>
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/30/虚拟内存/" rel="next" title="虚拟内存">
+                <i class="fa fa-chevron-left"></i> 虚拟内存
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#B树和B-树"><span class="nav-number">1.</span> <span class="nav-text">B树和B+树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#B树和B-树的相同点："><span class="nav-number">1.1.</span> <span class="nav-text">B树和B+树的相同点：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B树和B-树的不同点："><span class="nav-number">1.2.</span> <span class="nav-text">B树和B+树的不同点：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树相对于B树更加适合做数据库的索引"><span class="nav-number">1.3.</span> <span class="nav-text">B+树相对于B树更加适合做数据库的索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql中的B-树可以存放多少索引："><span class="nav-number">1.4.</span> <span class="nav-text">mysql中的B+树可以存放多少索引：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-树的插入："><span class="nav-number">2.</span> <span class="nav-text">B+树的插入：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树的插入过程："><span class="nav-number">2.1.</span> <span class="nav-text">B+树的插入过程：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树的插入流程："><span class="nav-number">2.2.</span> <span class="nav-text">B+树的插入流程：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-树的删除："><span class="nav-number">3.</span> <span class="nav-text">B+树的删除：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树的删除过程"><span class="nav-number">3.1.</span> <span class="nav-text">B+树的删除过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-树的删除流程："><span class="nav-number">3.2.</span> <span class="nav-text">B+树的删除流程：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-树的代码"><span class="nav-number">4.</span> <span class="nav-text">B+树的代码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据结构"><span class="nav-number">4.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插入操作"><span class="nav-number">4.2.</span> <span class="nav-text">插入操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#删除操作"><span class="nav-number">4.3.</span> <span class="nav-text">删除操作</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码实现"><span class="nav-number">5.</span> <span class="nav-text">代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
