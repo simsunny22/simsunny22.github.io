@@ -88,7 +88,7 @@
 <meta property="og:description" content="c的编译过程和常遇到的问题以及解决方法">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://yoursite.com/images/编译的问题/gcc.png">
-<meta property="og:updated_time" content="2020-07-23T07:03:58.473Z">
+<meta property="og:updated_time" content="2020-07-23T07:09:12.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编译的问题">
 <meta name="twitter:description" content="c的编译过程和常遇到的问题以及解决方法">
@@ -399,7 +399,7 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//a.cpp</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"a.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"b.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        test_a();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//a.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"b.h"</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_a</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"test_a \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//b.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test_b</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"test_b \n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>情况二：源文件中的多个头文件，共同包含相同的头文件**</p>
+<p><em>情况二：源文件中的多个头文件，共同包含相同的头文件</em></p>
 <p>源文件(main.cpp)中包含了头文件(a.h)和头文件(b.h)</p>
 <p>头文件(a.h)中包含了头文件(c.h)</p>
 <p>头文件(b.h)中包含了头文件(c.h)</p>
@@ -447,14 +447,10 @@
 <li><p>不完全类型：</p>
 <p>前置声明的结构体或者类，在定义之前，称之为不完全类型。</p></li>
 <li><p>不完全类型的使用限制：</p>
-<ol type="1">
-<li>只能定义指向这种不完全类型的指针或引用</li>
-</ol>
+<p>(1)只能定义指向这种不完全类型的指针或引用</p>
 <p>因为不完全类型我们无法计算出空间大小，所以我们不能定义不完整类型的变量，但是因为指针的大小是确定的，所以我们可以定义不完全类型的指针或引用</p>
-<ol start="2" type="1">
-<li>只能声明以不完全类型作为参数或者返回类型的函数</li>
-</ol>
-<p>因为函数的声明是不需要分配空间的，所以我们可以使用不完成类型作为函数的参数或者返回类型</p>
+<p>(2)只能声明以不完全类型作为参数或者返回类型的函数</p>
+<p>因为函数的声明是不需要分配空间的，所以我们可以使用不完成类型作为函数的参数或者返回类型；</p>
 <p>但是函数的定义，我们需要知道每个变量占用的空间大小，这样才能给这个函数分配空间，显然不完全类型的变量是无法计算空间大小的，所以我们不能定义以不完全类型作为参数或者返回类型的函数</p></li>
 </ul>
 <h3 id="解决方式-1">解决方式</h3>
