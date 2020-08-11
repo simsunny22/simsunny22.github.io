@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="多线程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="多线程，同步，互斥，锁，条件变量，信号量杂谈">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多线程杂谈">
+<meta property="og:url" content="http://yoursite.com/2020/08/11/多线程杂谈/index.html">
+<meta property="og:site_name" content="wz&#39;s blog">
+<meta property="og:description" content="多线程，同步，互斥，锁，条件变量，信号量杂谈">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/images/多线程杂谈/wz.png">
+<meta property="og:image" content="http://yoursite.com/images/多线程杂谈/cond.png">
+<meta property="og:image" content="http://yoursite.com/images/多线程杂谈/semaphore.png">
+<meta property="og:updated_time" content="2020-08-11T13:02:08.994Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多线程杂谈">
+<meta name="twitter:description" content="多线程，同步，互斥，锁，条件变量，信号量杂谈">
+<meta name="twitter:image" content="http://yoursite.com/images/多线程杂谈/wz.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/11/多线程杂谈/">
+
+
+
+
+
+  <title>多线程杂谈 | wz's blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wz's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">good good study, day day up</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/11/多线程杂谈/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wz">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wz's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">多线程杂谈</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-11T20:48:55+08:00">
+                2020-08-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/c/" itemprop="url" rel="index">
+                    <span itemprop="name">c</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/11/多线程杂谈/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2020/08/11/多线程杂谈/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+              <div class="post-description">
+                  多线程，同步，互斥，锁，条件变量，信号量杂谈
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="线程的使用">线程的使用</h1>
+<h2 id="相关函数">相关函数</h2>
+<p><strong>pthread_create</strong></p>
+<p>创建线程，如果需要传入参数，需要注意参数的生命周期，保证线程结束前，参数的生命周期没有结束</p>
+<p><strong>pthread_exit</strong></p>
+<p>保证主线程退出，但是进程不退出，等待其他线程退出，整个进程才会退出</p>
+<p><strong>pthread_join</strong></p>
+<p>主调线程阻塞，等待被调线程终止，然后主调线程回收被调线程资源，并继续运行</p>
+<p><strong>pthread_detach</strong></p>
+<p>主调线程继续运行，被调线程驻留后台运行，主调线程无法再取得该被调线程的控制权；</p>
+<p>当主调线程结束时，由运行时库负责清理与被调线程相关的资源。</p>
+<h2 id="代码">代码</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 编译: gcc test.cpp -lpthread -o test.o</span></span><br><span class="line"><span class="function"><span class="keyword">void</span>* <span class="title">say_hello</span><span class="params">(<span class="keyword">void</span>* args)</span> </span>&#123;</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">int</span> tid = *((<span class="keyword">int</span>*)args);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Hello Runoob id is %d！\n"</span>, tid);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        thread_join();</span><br><span class="line">        thread_detach();</span><br><span class="line">        <span class="comment">//never do this, because thread_detach call thread_exit</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"main thread is exit \n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thread_join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">void</span>* thread_ret;</span><br><span class="line">        <span class="keyword">pthread_t</span> tids[NUM_THREADS];</span><br><span class="line">        <span class="keyword">int</span> indexs[NUM_THREADS];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NUM_THREADS; ++i) &#123;</span><br><span class="line">            indexs[i] = i;</span><br><span class="line">           	<span class="comment">//注意这里可以使用临时变量i作为参数，传给say_hello函数</span></span><br><span class="line">          	<span class="comment">//因为pthread_join会阻塞住线程，等被调用线程结束，才会执行主线程</span></span><br><span class="line">          	<span class="comment">//这个时候i的生命周期还没有结束</span></span><br><span class="line">            <span class="keyword">int</span> ret = pthread_create(&amp;tids[i], <span class="literal">NULL</span>, say_hello, (<span class="keyword">void</span> *)&amp;(indexs[i]));</span><br><span class="line">            <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">               <span class="built_in">printf</span>(<span class="string">"pthread_create error: error_code=%d\n"</span>, ret) ;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//here wait thread finish and release thread resource</span></span><br><span class="line">            ret = pthread_join(tids[i], &amp;thread_ret);</span><br><span class="line">            <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">               <span class="built_in">printf</span>(<span class="string">"pthread_join error: error_code=%d\n"</span>, ret) ;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span>* ptr = (<span class="keyword">int</span>*)thread_ret;</span><br><span class="line">            <span class="keyword">if</span> (ptr == <span class="literal">NULL</span>) &#123;</span><br><span class="line">                 <span class="built_in">printf</span>(<span class="string">"thread exit coid is null \n "</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">"thread exit code: %d\n "</span>, *ptr);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"main thread join is exit \n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thread_detach</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">pthread_t</span> tids[NUM_THREADS];</span><br><span class="line">        <span class="keyword">int</span> indexs[NUM_THREADS];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NUM_THREADS; ++i) &#123;</span><br><span class="line">            indexs[i] = i;</span><br><span class="line">          	<span class="comment">//注意这里没有使用临时变量i作为参数，传给say_hello函数，是应为i的声明周期太短</span></span><br><span class="line">          	<span class="comment">//可能在线程调用前就结束了，所以需要使用indexs数组作为参数</span></span><br><span class="line">            <span class="keyword">int</span> ret = pthread_create(&amp;tids[i], <span class="literal">NULL</span>, say_hello, (<span class="keyword">void</span> *)&amp;(indexs[i]));</span><br><span class="line">            <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">               <span class="built_in">printf</span>(<span class="string">"pthread_create error: error_code=%d\n"</span>, ret) ;</span><br><span class="line">            &#125;</span><br><span class="line">            ret = pthread_detach(tids[i]);</span><br><span class="line">            <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">               <span class="built_in">printf</span>(<span class="string">"pthread_join error: error_code=%d\n"</span>, ret) ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"main thread detach is exit \n"</span>);</span><br><span class="line">        <span class="comment">//here wait all thread and exit process</span></span><br><span class="line">        pthread_exit(<span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考">参考</h2>
+<ul>
+<li><p><a href="https://www.runoob.com/cplusplus/cpp-multithreading.html" target="_blank" rel="noopener">C多线程</a></p></li>
+<li><p><a href="https://www.cnblogs.com/shijiaqi1066/p/5769417.html" target="_blank" rel="noopener">Linux C--多线程</a></p></li>
+<li><p><a href="https://liam.page/2017/05/16/first-step-on-multithread-programming-of-cxx/" target="_blank" rel="noopener">C++ 多线程编程初步</a></p></li>
+</ul>
+<h1 id="互斥同步相关概念">互斥同步相关概念</h1>
+<ul>
+<li><p>临界资源：能够被多个线程共享的数据/资源。</p></li>
+<li><p>临界区：对临界资源进行操作的那一段代码。</p></li>
+<li><p>线程的互斥：多个线程共享一个临界资源，只有一个线程可以对临界资源进行操作。</p>
+<p>(1)比如A线程和B线程都需要操作一个列表List，那么只有一个线程完操作完了List，另一个线程才可以操作。</p>
+<p>(2)如果A线程正在操作List，这个时候B线程也要操作List，那么B线程会被阻塞，直到A线程操作完成，B线程才回被唤醒。</p></li>
+<li><p>线程的同步：多个线程共同完成一项任务，多个线程的调用是有顺序性的。</p>
+<p>(1)比如A线程和B线程，A线程是需要从List中写入一个数据，B线程是需要想List读出一个数据，那么只有A线程先向List写入数据，B线程才能从List读出一个数据。</p>
+<p>(2)如果A线程还没有向List写入数据，B线程想从List中读出数据，B线程就会被阻塞住，知道A线程向List写入数据之后，B线程才回被唤醒。</p></li>
+</ul>
+<h1 id="锁条件变量信号量">锁,条件变量,信号量</h1>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>互斥</th>
+<th>同步</th>
+<th>使用方式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>锁</td>
+<td>可以</td>
+<td>-</td>
+<td>在同一线程内</td>
+</tr>
+<tr class="even">
+<td>条件变量</td>
+<td>-</td>
+<td>可以</td>
+<td>在不同线程间</td>
+</tr>
+<tr class="odd">
+<td>信号量</td>
+<td>可以</td>
+<td>可以</td>
+<td>都可以</td>
+</tr>
+</tbody>
+</table>
+<h2 id="通过锁可以实现线程之间的互斥">通过锁可以实现线程之间的互斥</h2>
+<p>我们假设有4个线程共同调用函数func，函数func中有一个互斥锁，用来实现临界资源的互斥。</p>
+<p><strong>注意：</strong>这里对锁的操作是要在同一个线程中完成的。</p>
+<p><img src="/images/多线程杂谈/wz.png"></p>
+<p>假设thread1是最先调用的线程，通过函数func来给临界资源加锁，来阻塞其他线程对临界资源的访问；</p>
+<p>当thread1的锁没有释放，当其他线程也通过func来访问临界资源时，就会被阻塞住；</p>
+<p>当thread1的锁被释放，最先调度的被阻塞的线程，获得了锁，然后访问临界资源，其他线程继续被阻塞。</p>
+<h2 id="通过条件变量可以实现线程之间的同步">通过条件变量可以实现线程之间的同步</h2>
+<p>我们假设有4个线程；</p>
+<p>thread1和thread2调用函数func1，通过条件变量<strong>阻塞线程</strong>；</p>
+<p>thread3和thread4调用函数func2，通过条件变量<strong>唤醒线程</strong>。</p>
+<p><img src="/images/多线程杂谈/cond.png"></p>
+<p>首先我们初始化条件变量cond；</p>
+<p>线程thread1和thread2调用函数func1，如果满足阻塞条件时，就会通过条件变量，阻塞线程；</p>
+<p>线程thread2和thread3调用函数func2，如果有线程被<strong>条件变量</strong>阻塞，则会唤起被阻塞的线程</p>
+<p><strong>注意：</strong>条件变量也是一种临界资源，条件变量也是一种临界资源，使用的时候，需要加锁。</p>
+<p><strong>问题：</strong>为什么在pthread_cond_wait的时候，需要mutex锁作为参数</p>
+<p><strong>解决：</strong>就是因为cond本身也一种临界资源，锁以需要锁</p>
+<h2 id="通过信号量可以实现线程之间的同步">通过信号量可以实现线程之间的同步</h2>
+<p>假设有4个线程；</p>
+<p>thread1和thread2调用函数func1，如果信号量小于等于0时候，通过信号量阻塞线程；</p>
+<p>thread3和thread4调用函数func2，如果有线程被信号量阻塞，则会唤起被阻塞的线程。</p>
+<figure>
+<img src="/images/多线程杂谈/semaphore.png" alt><figcaption>semaphore</figcaption>
+</figure>
+<p>首先初始化一个全局的信号量，并且给这个信号量一个和初始值。</p>
+<p>thread1和thread2调用函数func1，如果信号量小于等于0时候，通过信号量阻塞线程；</p>
+<p>thread3和thread4调用函数func2，如果有线程被<strong>信号量</strong>阻塞，则会唤起被阻塞的线程。</p>
+<p><strong>注意：</strong>信号量是一个原子操作，对信号量的加减是不回被打断的。</p>
+<h2 id="锁和条件变量区别">锁和条件变量区别</h2>
+<ul>
+<li><p><strong>锁</strong>是实现线程互斥的手段，加锁和解锁需要在同一个线程中。</p></li>
+<li><p><strong>条件变量</strong>是实现线程同步的手段，<strong>条件变量</strong>的阻塞(wait)和唤醒(signal)不在同一个线程中。</p></li>
+</ul>
+<h2 id="条件变量和信号量">条件变量和信号量</h2>
+<ul>
+<li><p>条件变量和信号量都可以实现线程的同步;</p></li>
+<li><p>条件变量是需要外部的条件来决定，是否需要通<strong>过条件变</strong>量来阻塞当前线程。</p></li>
+<li><p>信号量是通过本身的计数器来决定，是否需要通过信号量来阻塞当前线程(当计数器小于等于0的时候阻塞)</p></li>
+</ul>
+<h2 id="参考-1">参考</h2>
+<ul>
+<li><p><a href="https://zhuanlan.zhihu.com/p/58838318" target="_blank" rel="noopener">为什么pthread_cond_wait需要互斥锁mutex作为参数</a></p></li>
+<li><p><a href="https://zhuanlan.zhihu.com/p/55123862" target="_blank" rel="noopener">条件变量错误使用的案例</a></p></li>
+</ul>
+<p>在singal的的时候，没有对临界变量加锁，导致wait永远不会被唤醒</p>
+<h1 id="生产者和消费者问题">生产者和消费者问题</h1>
+<p>有多个生产者，生产的数据放入队列中；同时有多个消费者，消费公共队列中的数据。</p>
+<h2 id="问题分析">问题分析：</h2>
+<p><strong>生产者消费者的互斥:</strong></p>
+<p>多个生产者和多个消费者，他们都共同使用一个队列；</p>
+<p>当其中一个生产者或者消费者在访问队列的时候，其他的生产者和消费者需要被阻塞。</p>
+<p><strong>生产者消费者的同步：</strong></p>
+<p>如果公共队列的数据是空，需要生产者先生产数据放入队列，消费者才能从队列中拿出数据；</p>
+<p>如果公共队列的数据满了，需要消费者先消费队列中的数据，生产者才能生产数据放入队列。</p>
+<h2 id="解决问题">解决问题：</h2>
+<p><strong>通过互斥和条件变量解决</strong></p>
+<ul>
+<li><p>用一个互斥锁来解决互斥问题：</p>
+<p>一个互斥锁给共享队列加锁，保证队列的互斥性。</p></li>
+<li><p>用两个条件变量来解决同步问题：</p>
+<p>一个条件变量来控制当队列空的时候，生产者在消费者之前执行；</p>
+<p>一个条件变量来控制当队列满的时候，消费者在生产者之前执行。</p></li>
+<li><p>用一个条件变量来解决互斥问题：</p>
+<p>当队列是空的时候，我们通过条件变量阻塞消费者。</p>
+<p>当队列是满的时候，我们通过同一个条件变量阻塞生产者。</p></li>
+</ul>
+<p><strong>通过互斥锁和信号量解决</strong></p>
+<ul>
+<li><p>用一个互斥变量来解决互斥问题：</p>
+<p>一个互斥锁给共享队列加锁，保证队列的互斥性。</p></li>
+<li><p>用一两个信号量解决同步问题：</p>
+<p>一个信号量来控制消费者，当队列空的时候，阻塞消费者</p>
+<p>一个信号量来控制生产者，当队列满的时候，阻塞生产者</p></li>
+</ul>
+<h2 id="代码-1">代码</h2>
+<ul>
+<li><strong>一个互斥锁和一个条件变量来解决</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 生产者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"produce %d\n"</span>, i);</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//当缓冲区为满时，生产者需要等待</span></span><br><span class="line">        <span class="keyword">while</span> (buffer_is_full()) &#123;</span><br><span class="line">            pthread_cond_wait(&amp;cond, &amp;mutex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//此时，缓冲区肯定不是满的，向缓冲区写数据</span></span><br><span class="line">        buffer_put(i);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果有线程被阻塞，一定是队列为空，消费者线程被阻塞，通过cond唤醒消费者</span></span><br><span class="line">        pthread_cond_signal(&amp;cond);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 消费者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 消费CAPACITY*2个数据</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">////当缓冲区为空时，消费者需要等待</span></span><br><span class="line">        <span class="keyword">while</span> (buffer_is_empty()) &#123;</span><br><span class="line">            pthread_cond_wait(&amp;cond, &amp;mutex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//此时，缓冲区肯定不是空的，从缓冲区取数据</span></span><br><span class="line">        <span class="keyword">int</span> item = buffer_get();</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">         <span class="comment">//如果有线程被阻塞，一定是队列满了，生产者线程被阻塞，通过cond唤醒生产者</span></span><br><span class="line">        pthread_cond_signal(&amp;cond);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\tconsume %d\n"</span>, item);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>一个互斥锁和两个条件变量来解决</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生产者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"produce %d\n"</span>, i);</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        <span class="comment">//当缓冲区为满时，通过produce_cond使生产者线程阻塞</span></span><br><span class="line">        <span class="keyword">while</span> (buffer_is_full()) &#123;</span><br><span class="line">            pthread_cond_wait(&amp;produce_cond, &amp;mutex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//此时，缓冲区肯定不是满的，向缓冲区写数据</span></span><br><span class="line">        buffer_put(i);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果队列空了，此时消费者会被consume_cond阻塞住，生产者通过consume_cond唤醒消费者线程</span></span><br><span class="line">        pthread_cond_signal(&amp;consume_cond);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 消费者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 消费CAPACITY*2个数据</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 当缓冲区为空时，通过consume_cond使消费者线程阻塞</span></span><br><span class="line">        <span class="keyword">while</span> (buffer_is_empty()) &#123;</span><br><span class="line">            pthread_cond_wait(&amp;consume_cond, &amp;mutex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 此时，缓冲区肯定不是空的，从缓冲区取数据</span></span><br><span class="line">        <span class="keyword">int</span> item = buffer_get();</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果队列满了，此时生产者会被produce_cond阻塞住，消费者通过produce_cond唤醒生产者线程</span></span><br><span class="line">        pthread_cond_signal(&amp;produce_cond);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\tconsume %d\n"</span>, item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>一个互斥锁和两个信号量来解决</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//队列中有数据格子的数量，如果是空，就是所有的格子都是空，表示不能消费</span></span><br><span class="line">semaphore full_semaphore = <span class="number">0</span>; <span class="comment">//for conumse</span></span><br><span class="line"><span class="comment">//列表中空闲格子的数量，如果是空，就是所有的格子都有数据，表示不能生产</span></span><br><span class="line">semaphore empty_semaphore = CAPACITY; <span class="comment">//for prouducer</span></span><br><span class="line"><span class="keyword">pthread_mutex_t</span> mutex;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生产者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"produce %d\n"</span>, i);</span><br><span class="line">        <span class="keyword">while</span>(empty_semaphore &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                sleep(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        empty_semaphore--;</span><br><span class="line"></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        buffer_put(i);</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//生产之后，有数据的格子数量+1，如果在+1前，有数量的格子数量是0，表示队列为空</span></span><br><span class="line">        <span class="comment">//消费者会被full_semaphore这个信号量阻塞住，通过full_semaphore++，可以唤醒消费者</span></span><br><span class="line">        full_semaphore++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 消费者线程执行的流程</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer_loop</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; CAPACITY*<span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">while</span>(full_semaphore &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                sleep(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        full_semaphore--;</span><br><span class="line"></span><br><span class="line">        pthread_mutex_lock(&amp;mutex);</span><br><span class="line">        <span class="comment">// 此时，缓冲区肯定不是空的，从缓冲区取数据</span></span><br><span class="line">        <span class="keyword">int</span> item = buffer_get();</span><br><span class="line">        pthread_mutex_unlock(&amp;mutex);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//消费之后，空闲的格子数量+1，如果在+1前，空闲的格子数量是0，表示队列已经满了</span></span><br><span class="line">        <span class="comment">//生产者会被empty_semaphore这个信号量阻塞住，通过empty_semaphore++，可以唤醒生产者</span></span><br><span class="line">        empty_semaphore++;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"\tconsume %d\n"</span>, item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考-2">参考</h2>
+<ul>
+<li><p><a href="http://c.biancheng.net/view/434.html" target="_blank" rel="noopener">条件变量(c++11)实现生产者消费者问题</a></p></li>
+<li><p><a href="https://www.cnblogs.com/wkfvawl/p/11520301.html" target="_blank" rel="noopener">信号量和PV原语</a></p></li>
+<li><p><a href="https://www.zhihu.com/question/21803368" target="_blank" rel="noopener">问什么不能用一个信号量解决生产者消费者问题</a></p>
+<p>可以从PV原语中，PV前置关系来解释上述问题</p></li>
+</ul>
+<h1 id="源码">源码</h1>
+<ul>
+<li><p><a href="https://github.com/simsunny22/simunny22/tree/master/thread/c/thread" target="_blank" rel="noopener">多线程使用</a></p></li>
+<li><p><a href="https://github.com/simsunny22/simunny22/tree/master/thread/c/producer_consumer" target="_blank" rel="noopener">生产者消费者实现</a></p></li>
+</ul>
+<h1 id="todo">TODO</h1>
+<ul>
+<li><p>锁的实现</p></li>
+<li><p>条件变量的实现</p></li>
+<li><p>信号量的实现</p></li>
+<li><p>信号量和PV原语</p></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>嘿 如果对你有帮助 就请我喝瓶可乐吧</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="wz WeChat Pay">
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="wz Alipay">
+        <p>Alipay</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/27/extern-and-static/" rel="next" title="c/c++的声明和定义和static,extern的使用">
+                <i class="fa fa-chevron-left"></i> c/c++的声明和定义和static,extern的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">wz</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#线程的使用"><span class="nav-number">1.</span> <span class="nav-text">线程的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关函数"><span class="nav-number">1.1.</span> <span class="nav-text">相关函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码"><span class="nav-number">1.2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">1.3.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#互斥同步相关概念"><span class="nav-number">2.</span> <span class="nav-text">互斥同步相关概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#锁条件变量信号量"><span class="nav-number">3.</span> <span class="nav-text">锁,条件变量,信号量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#通过锁可以实现线程之间的互斥"><span class="nav-number">3.1.</span> <span class="nav-text">通过锁可以实现线程之间的互斥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过条件变量可以实现线程之间的同步"><span class="nav-number">3.2.</span> <span class="nav-text">通过条件变量可以实现线程之间的同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过信号量可以实现线程之间的同步"><span class="nav-number">3.3.</span> <span class="nav-text">通过信号量可以实现线程之间的同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁和条件变量区别"><span class="nav-number">3.4.</span> <span class="nav-text">锁和条件变量区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条件变量和信号量"><span class="nav-number">3.5.</span> <span class="nav-text">条件变量和信号量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考-1"><span class="nav-number">3.6.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生产者和消费者问题"><span class="nav-number">4.</span> <span class="nav-text">生产者和消费者问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题分析"><span class="nav-number">4.1.</span> <span class="nav-text">问题分析：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决问题"><span class="nav-number">4.2.</span> <span class="nav-text">解决问题：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代码-1"><span class="nav-number">4.3.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考-2"><span class="nav-number">4.4.</span> <span class="nav-text">参考</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源码"><span class="nav-number">5.</span> <span class="nav-text">源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todo"><span class="nav-number">6.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wz</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '0oHpRzCDoxxHiplHw0DmArah-gzGzoHsz',
+        appKey: 'bUqpr5tY88eMd3W5ji0f6Sml',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
